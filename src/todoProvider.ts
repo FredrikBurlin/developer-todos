@@ -16,17 +16,22 @@ export class TodoTreeItem extends vscode.TreeItem {
     super(label, collapsibleState);
 
     if (itemType === 'todoItem' && todo) {
-      // Set different context values for completed vs incomplete
-      this.contextValue = todo.completed ? 'todoItemCompleted' : 'todoItem';
-      this.description = todo.relativePath;
-      this.tooltip = `${todo.description}\n\nFile: ${todo.relativePath}`;
-
-      // Add checkmark icon for completed todos
-      if (todo.completed) {
+      // Set context values based on state
+      if (todo.ignored) {
+        this.contextValue = 'todoItemIgnored';
+        this.iconPath = new vscode.ThemeIcon('debug-stackframe-dot', new vscode.ThemeColor('disabledForeground'));
+        // Apply strikethrough using resourceUri hack
+        this.resourceUri = vscode.Uri.parse('strikethrough://strikethrough');
+      } else if (todo.completed) {
+        this.contextValue = 'todoItemCompleted';
         this.iconPath = new vscode.ThemeIcon('check', new vscode.ThemeColor('testing.iconPassed'));
       } else {
+        this.contextValue = 'todoItem';
         this.iconPath = new vscode.ThemeIcon('circle-outline');
       }
+
+      this.description = todo.relativePath;
+      this.tooltip = `${todo.description}\n\nFile: ${todo.relativePath}`;
 
       // No default command - clicking expands/collapses to show description
     } else if (itemType === 'description') {
@@ -39,12 +44,17 @@ export class TodoTreeItem extends vscode.TreeItem {
 }
 
 /**
+ * Filter modes for the todo view
+ */
+export type FilterMode = 'all' | 'remaining' | 'completed' | 'ignored';
+
+/**
  * Tree data provider for the Developer Todos view
  */
 export class TodoProvider implements vscode.TreeDataProvider<TodoTreeItem> {
   private _onDidChangeTreeData = new vscode.EventEmitter<TodoTreeItem | undefined | void>();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
-  private showAll: boolean = false; // Filter: false = remaining only, true = all
+  private filterMode: FilterMode = 'remaining'; // Default to showing remaining only
 
   constructor(
     private todoManager: TodoManager,
@@ -57,18 +67,18 @@ export class TodoProvider implements vscode.TreeDataProvider<TodoTreeItem> {
   }
 
   /**
-   * Toggle filter between showing all todos or only remaining
+   * Set filter mode
    */
-  public toggleFilter(): void {
-    this.showAll = !this.showAll;
+  public setFilterMode(mode: FilterMode): void {
+    this.filterMode = mode;
     this.refresh();
   }
 
   /**
-   * Get current filter state
+   * Get current filter mode
    */
-  public getFilterState(): string {
-    return this.showAll ? 'all' : 'remaining';
+  public getFilterMode(): FilterMode {
+    return this.filterMode;
   }
 
   /**
@@ -150,13 +160,24 @@ export class TodoProvider implements vscode.TreeDataProvider<TodoTreeItem> {
     const items: TodoTreeItem[] = [];
 
     for (const group of groups) {
-      const remaining = group.todos.filter((t) => !t.completed);
+      const remaining = group.todos.filter((t) => !t.completed && !t.ignored);
       const completed = group.todos.filter((t) => t.completed);
+      const ignored = group.todos.filter((t) => t.ignored);
 
-      const totalCount = this.showAll ? group.todos.length : remaining.length;
+      // Determine what to show based on filter mode
+      let displayCount = 0;
+      if (this.filterMode === 'all') {
+        displayCount = group.todos.length;
+      } else if (this.filterMode === 'remaining') {
+        displayCount = remaining.length;
+      } else if (this.filterMode === 'completed') {
+        displayCount = completed.length;
+      } else if (this.filterMode === 'ignored') {
+        displayCount = ignored.length;
+      }
 
-      if (totalCount > 0) {
-        const label = `${group.icon} ${group.label} (${remaining.length}${this.showAll ? `/${group.todos.length}` : ''})`;
+      if (displayCount > 0) {
+        const label = `${group.icon} ${group.label} (${remaining.length}${this.filterMode === 'all' ? `/${group.todos.length}` : ''})`;
         items.push(
           new TodoTreeItem(
             label,
@@ -199,12 +220,23 @@ export class TodoProvider implements vscode.TreeDataProvider<TodoTreeItem> {
 
     const allTodos = todos.filter((t) => t.priority === priority);
 
-    // Separate incomplete and completed
-    const incomplete = allTodos.filter((t) => !t.completed);
-    const completed = allTodos.filter((t) => t.completed);
+    // Separate by state
+    const active = allTodos.filter((t) => !t.completed && !t.ignored);
+    const completed = allTodos.filter((t) => t.completed && !t.ignored);
+    const ignored = allTodos.filter((t) => t.ignored);
 
-    // Show incomplete first, then completed (if showAll is true)
-    const todosToShow = this.showAll ? [...incomplete, ...completed] : incomplete;
+    // Determine what to show based on filter mode
+    let todosToShow: TodoInstance[] = [];
+    if (this.filterMode === 'all') {
+      // Show active first, then completed, then ignored (at bottom)
+      todosToShow = [...active, ...completed, ...ignored];
+    } else if (this.filterMode === 'remaining') {
+      todosToShow = active;
+    } else if (this.filterMode === 'completed') {
+      todosToShow = completed;
+    } else if (this.filterMode === 'ignored') {
+      todosToShow = ignored;
+    }
 
     return todosToShow.map((todo) => {
       return new TodoTreeItem(
@@ -222,7 +254,7 @@ export class TodoProvider implements vscode.TreeDataProvider<TodoTreeItem> {
   public getDescription(): string {
     const branch = this.gitService.getCurrentBranch();
     const todos = this.todoManager.getTodos();
-    const activeTodos = todos.filter((t) => !t.completed);
+    const activeTodos = todos.filter((t) => !t.completed && !t.ignored);
 
     return `[${branch}] ${activeTodos.length} active`;
   }

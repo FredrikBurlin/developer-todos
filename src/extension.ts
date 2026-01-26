@@ -81,14 +81,57 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  const toggleFilterCommand = vscode.commands.registerCommand(
-    'developerTodos.toggleFilter',
+  const showFilterMenuCommand = vscode.commands.registerCommand(
+    'developerTodos.showFilterMenu',
+    async () => {
+      const currentMode = todoProvider.getFilterMode();
+      const options = [
+        { label: '$(list-unordered) All Todos', value: 'all' as const, description: currentMode === 'all' ? '(Current)' : '' },
+        { label: '$(circle-outline) Remaining Only', value: 'remaining' as const, description: currentMode === 'remaining' ? '(Current)' : '' },
+        { label: '$(check) Completed Only', value: 'completed' as const, description: currentMode === 'completed' ? '(Current)' : '' },
+        { label: '$(circle-slash) Ignored Only', value: 'ignored' as const, description: currentMode === 'ignored' ? '(Current)' : '' },
+      ];
+
+      const selected = await vscode.window.showQuickPick(options, {
+        placeHolder: 'Select filter mode',
+      });
+
+      if (selected) {
+        todoProvider.setFilterMode(selected.value);
+        vscode.window.showInformationMessage(`Filter: ${selected.label.replace(/\$\([^)]+\)\s*/, '')}`);
+      }
+    }
+  );
+
+  const filterAllCommand = vscode.commands.registerCommand(
+    'developerTodos.filterAll',
     () => {
-      todoProvider.toggleFilter();
-      const state = todoProvider.getFilterState();
-      vscode.window.showInformationMessage(
-        `Showing ${state === 'all' ? 'all todos' : 'remaining todos only'}`
-      );
+      todoProvider.setFilterMode('all');
+      vscode.window.showInformationMessage('Showing all todos');
+    }
+  );
+
+  const filterRemainingCommand = vscode.commands.registerCommand(
+    'developerTodos.filterRemaining',
+    () => {
+      todoProvider.setFilterMode('remaining');
+      vscode.window.showInformationMessage('Showing remaining todos only');
+    }
+  );
+
+  const filterCompletedCommand = vscode.commands.registerCommand(
+    'developerTodos.filterCompleted',
+    () => {
+      todoProvider.setFilterMode('completed');
+      vscode.window.showInformationMessage('Showing completed todos only');
+    }
+  );
+
+  const filterIgnoredCommand = vscode.commands.registerCommand(
+    'developerTodos.filterIgnored',
+    () => {
+      todoProvider.setFilterMode('ignored');
+      vscode.window.showInformationMessage('Showing ignored todos only');
     }
   );
 
@@ -128,6 +171,28 @@ export async function activate(context: vscode.ExtensionContext) {
         const todo: TodoInstance = item.todo;
         await todoManager.reopenTodo(todo.id);
         vscode.window.showInformationMessage(`Reopened: ${todo.name}`);
+      }
+    }
+  );
+
+  const ignoreTodoCommand = vscode.commands.registerCommand(
+    'developerTodos.ignoreTodo',
+    async (item: any) => {
+      if (item && item.todo) {
+        const todo: TodoInstance = item.todo;
+        await todoManager.ignoreTodo(todo.id);
+        vscode.window.showInformationMessage(`Ignored: ${todo.name}`);
+      }
+    }
+  );
+
+  const unignoreTodoCommand = vscode.commands.registerCommand(
+    'developerTodos.unignoreTodo',
+    async (item: any) => {
+      if (item && item.todo) {
+        const todo: TodoInstance = item.todo;
+        await todoManager.unignoreTodo(todo.id);
+        vscode.window.showInformationMessage(`Unignored: ${todo.name}`);
       }
     }
   );
@@ -201,10 +266,16 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     treeView,
     refreshCommand,
-    toggleFilterCommand,
+    showFilterMenuCommand,
+    filterAllCommand,
+    filterRemainingCommand,
+    filterCompletedCommand,
+    filterIgnoredCommand,
     navigateToFileCommand,
     completeTodoCommand,
     reopenTodoCommand,
+    ignoreTodoCommand,
+    unignoreTodoCommand,
     openFileCommand,
     showTemplateCommand,
     clearBranchTodosCommand,
@@ -223,6 +294,10 @@ export async function activate(context: vscode.ExtensionContext) {
       todoManager.completeTodo(id, branch),
     reopenTodo: (id: string, branch?: string) =>
       todoManager.reopenTodo(id, branch),
+    ignoreTodo: (id: string, branch?: string) =>
+      todoManager.ignoreTodo(id, branch),
+    unignoreTodo: (id: string, branch?: string) =>
+      todoManager.unignoreTodo(id, branch),
     refreshTodos: (branch?: string) => todoManager.refreshTodos(branch),
     getAllBranchTodos: () => todoManager.getAllBranchTodos(),
   };

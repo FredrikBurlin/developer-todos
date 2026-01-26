@@ -31,6 +31,8 @@ export interface TodoInstance {
   priority: 'high' | 'medium' | 'low';
   completed: boolean;
   completedAt?: string;
+  ignored: boolean;
+  ignoredAt?: string;
   branch: string;
 }
 
@@ -43,6 +45,8 @@ export interface TodoState {
       [todoId: string]: {
         completed: boolean;
         completedAt?: string;
+        ignored: boolean;
+        ignoredAt?: string;
         filePath: string;
         templateId: string;
       };

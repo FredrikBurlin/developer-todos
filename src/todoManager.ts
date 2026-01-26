@@ -102,6 +102,8 @@ export class TodoManager {
           priority: template.priority || 'medium',
           completed: todoData.completed,
           completedAt: todoData.completedAt,
+          ignored: todoData.ignored || false,
+          ignoredAt: todoData.ignoredAt,
           branch,
         });
       }
@@ -123,6 +125,8 @@ export class TodoManager {
         state[branch].todos[todoId] = {
           completed: todo.completed,
           completedAt: todo.completedAt,
+          ignored: todo.ignored,
+          ignoredAt: todo.ignoredAt,
           filePath: todo.filePath,
           templateId: todo.templateId,
         };
@@ -215,6 +219,7 @@ export class TodoManager {
         relativePath,
         priority: template.priority || 'medium',
         completed: false,
+        ignored: false,
         branch: currentBranch,
       };
 
@@ -269,6 +274,52 @@ export class TodoManager {
 
     todo.completed = false;
     todo.completedAt = undefined;
+
+    await this.saveState();
+    this.onTodosChangedEmitter.fire();
+  }
+
+  /**
+   * Mark a todo as ignored/skipped
+   */
+  public async ignoreTodo(todoId: string, branch?: string): Promise<void> {
+    const currentBranch = branch || this.gitService.getCurrentBranch();
+    const branchTodos = this.todos.get(currentBranch);
+
+    if (!branchTodos) {
+      return;
+    }
+
+    const todo = branchTodos.get(todoId);
+    if (!todo) {
+      return;
+    }
+
+    todo.ignored = true;
+    todo.ignoredAt = new Date().toISOString();
+
+    await this.saveState();
+    this.onTodosChangedEmitter.fire();
+  }
+
+  /**
+   * Unignore a todo (reopen from ignored state)
+   */
+  public async unignoreTodo(todoId: string, branch?: string): Promise<void> {
+    const currentBranch = branch || this.gitService.getCurrentBranch();
+    const branchTodos = this.todos.get(currentBranch);
+
+    if (!branchTodos) {
+      return;
+    }
+
+    const todo = branchTodos.get(todoId);
+    if (!todo) {
+      return;
+    }
+
+    todo.ignored = false;
+    todo.ignoredAt = undefined;
 
     await this.saveState();
     this.onTodosChangedEmitter.fire();

@@ -63,9 +63,25 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "developerTodos.toggleFilter",
-        "title": "Toggle Filter (All/Remaining)",
+        "command": "developerTodos.showFilterMenu",
+        "title": "Filter Todos",
         "icon": "$(filter)"
+      },
+      {
+        "command": "developerTodos.filterAll",
+        "title": "Show All Todos"
+      },
+      {
+        "command": "developerTodos.filterRemaining",
+        "title": "Show Remaining Only"
+      },
+      {
+        "command": "developerTodos.filterCompleted",
+        "title": "Show Completed Only"
+      },
+      {
+        "command": "developerTodos.filterIgnored",
+        "title": "Show Ignored Only"
       },
       {
         "command": "developerTodos.completeTodo",
@@ -75,6 +91,16 @@
       {
         "command": "developerTodos.reopenTodo",
         "title": "Reopen Todo",
+        "icon": "$(circle-outline)"
+      },
+      {
+        "command": "developerTodos.ignoreTodo",
+        "title": "Ignore/Skip Todo",
+        "icon": "$(circle-slash)"
+      },
+      {
+        "command": "developerTodos.unignoreTodo",
+        "title": "Unignore Todo",
         "icon": "$(circle-outline)"
       },
       {
@@ -99,7 +125,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "developerTodos.toggleFilter",
+          "command": "developerTodos.showFilterMenu",
           "when": "view == developerTodosView",
           "group": "navigation"
         },
@@ -117,22 +143,32 @@
       "view/item/context": [
         {
           "command": "developerTodos.navigateToFile",
-          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemCompleted)",
-          "group": "inline"
+          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemCompleted || viewItem == todoItemIgnored)",
+          "group": "inline@1"
         },
         {
           "command": "developerTodos.completeTodo",
           "when": "view == developerTodosView && viewItem == todoItem",
-          "group": "inline"
+          "group": "inline@2"
+        },
+        {
+          "command": "developerTodos.ignoreTodo",
+          "when": "view == developerTodosView && viewItem == todoItem",
+          "group": "inline@3"
         },
         {
           "command": "developerTodos.reopenTodo",
           "when": "view == developerTodosView && viewItem == todoItemCompleted",
-          "group": "inline"
+          "group": "inline@2"
+        },
+        {
+          "command": "developerTodos.unignoreTodo",
+          "when": "view == developerTodosView && viewItem == todoItemIgnored",
+          "group": "inline@2"
         },
         {
           "command": "developerTodos.showTemplate",
-          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemCompleted)"
+          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemCompleted || viewItem == todoItemIgnored)"
         }
       ]
     }
