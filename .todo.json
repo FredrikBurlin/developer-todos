@@ -1,0 +1,28 @@
+{
+  "templates": [
+    {
+      "id": "ts-add-tests",
+      "name": "Add unit tests",
+      "description": "Create unit tests for this TypeScript module",
+      "applyTo": "src/**/*.ts",
+      "excludeFileContains": "test",
+      "priority": "high"
+    },
+    {
+      "id": "ts-add-jsdoc",
+      "name": "Add JSDoc comments",
+      "description": "Add JSDoc documentation for exported functions and classes",
+      "applyTo": "src/**/*.ts",
+      "fileContains": "export",
+      "priority": "medium"
+    },
+    {
+      "id": "vscode-command-register",
+      "name": "Register command in package.json",
+      "description": "Make sure all VSCode commands are registered in package.json contributes section",
+      "applyTo": "src/**/*.ts",
+      "fileContains": "vscode.commands.register",
+      "priority": "high"
+    }
+  ]
+}

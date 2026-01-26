@@ -1,0 +1,251 @@
+{
+  "templates": [
+    {
+      "id": "apex-controller-permission",
+      "name": "Add Apex class permission",
+      "description": "Add the Apex class to the appropriate permission set so users can execute it",
+      "applyTo": "**/main/default/classes/**/*.cls",
+      "fileContains": "@AuraEnabled",
+      "priority": "high"
+    },
+    {
+      "id": "apex-test-class",
+      "name": "Create test class",
+      "description": "Add test coverage for the new Apex class (minimum 75% required for deployment)",
+      "applyTo": "**/main/default/classes/**/*.cls",
+      "excludeFileContains": "@isTest",
+      "priority": "high"
+    },
+    {
+      "id": "apex-fls-check",
+      "name": "Add Field-Level Security checks",
+      "description": "Verify CRUD/FLS permissions before DML operations (use WITH SECURITY_ENFORCED or Security.stripInaccessible)",
+      "applyTo": "**/main/default/classes/**/*.cls",
+      "fileContains": "insert ",
+      "priority": "high"
+    },
+    {
+      "id": "apex-sharing-review",
+      "name": "Review sharing settings",
+      "description": "Ensure the class has appropriate sharing keywords (with sharing, without sharing, inherited sharing)",
+      "applyTo": "**/main/default/classes/**/*.cls",
+      "fileContains": "public class",
+      "excludeFileContains": "@isTest",
+      "priority": "medium"
+    },
+    {
+      "id": "lwc-add-to-page",
+      "name": "Add LWC to page layout",
+      "description": "Add the Lightning Web Component to a flexipage, record page, or app page so users can access it",
+      "applyTo": "**/main/default/lwc/**/*.js",
+      "priority": "high"
+    },
+    {
+      "id": "lwc-jest-test",
+      "name": "Create Jest tests for LWC",
+      "description": "Add unit tests for the Lightning Web Component using Jest",
+      "applyTo": "**/main/default/lwc/**/*.js",
+      "excludeFileContains": "__tests__",
+      "priority": "high"
+    },
+    {
+      "id": "lwc-custom-labels",
+      "name": "Add custom labels",
+      "description": "If the component has hardcoded text, consider moving it to Custom Labels for translation support",
+      "applyTo": "**/main/default/lwc/**/*.js",
+      "priority": "low"
+    },
+    {
+      "id": "lwc-permission-visibility",
+      "name": "Add LWC to permission set",
+      "description": "Grant access to the Lightning Web Component in the appropriate permission set if using @api visibility restrictions",
+      "applyTo": "**/main/default/lwc/**/*.js",
+      "priority": "medium"
+    },
+    {
+      "id": "trigger-handler",
+      "name": "Implement trigger handler pattern",
+      "description": "Create a trigger handler class following best practices (one trigger per object, logic in handler class)",
+      "applyTo": "**/main/default/triggers/**/*.trigger",
+      "priority": "high"
+    },
+    {
+      "id": "trigger-test-coverage",
+      "name": "Add trigger test coverage",
+      "description": "Create test class covering all trigger scenarios (insert, update, delete, undelete) and bulk operations",
+      "applyTo": "**/main/default/triggers/**/*.trigger",
+      "priority": "high"
+    },
+    {
+      "id": "trigger-bulkification",
+      "name": "Verify trigger is bulkified",
+      "description": "Ensure the trigger/handler handles bulk operations correctly (no SOQL/DML in loops)",
+      "applyTo": "**/main/default/triggers/**/*.trigger",
+      "priority": "high"
+    },
+    {
+      "id": "custom-object-permission-set",
+      "name": "Add object to permission set",
+      "description": "Grant CRUD permissions for the new custom object in the appropriate permission set",
+      "applyTo": "**/main/default/objects/**/*.object-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "custom-object-page-layout",
+      "name": "Create page layout",
+      "description": "Design and create a page layout for the custom object with relevant fields and sections",
+      "applyTo": "**/main/default/objects/**/*.object-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "custom-object-list-view",
+      "name": "Create list views",
+      "description": "Create useful list views for the custom object (All, Recent, My Records, etc.)",
+      "applyTo": "**/main/default/objects/**/*.object-meta.xml",
+      "priority": "medium"
+    },
+    {
+      "id": "custom-object-tab",
+      "name": "Create tab and add to app",
+      "description": "Create a tab for the custom object and add it to the appropriate Lightning app",
+      "applyTo": "**/main/default/objects/**/*.object-meta.xml",
+      "priority": "medium"
+    },
+    {
+      "id": "custom-field-page-layout",
+      "name": "Add field to page layout",
+      "description": "Add the new custom field to the appropriate page layout sections",
+      "applyTo": "**/main/default/objects/**/fields/*.field-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "custom-field-fls",
+      "name": "Set field-level security",
+      "description": "Configure field-level security in permission sets for the new custom field",
+      "applyTo": "**/main/default/objects/**/fields/*.field-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "permission-set-assignment",
+      "name": "Assign permission set to users",
+      "description": "Assign the permission set to appropriate users or add it to a permission set group",
+      "applyTo": "**/main/default/permissionsets/**/*.permissionset-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "permission-set-documentation",
+      "name": "Document permission set purpose",
+      "description": "Add description to permission set explaining what access it grants and who should receive it",
+      "applyTo": "**/main/default/permissionsets/**/*.permissionset-meta.xml",
+      "priority": "medium"
+    },
+    {
+      "id": "flow-activation",
+      "name": "Activate flow in production",
+      "description": "Remember to activate the flow after deploying to production (flows deploy as inactive)",
+      "applyTo": "**/main/default/flows/**/*.flow-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "flow-testing",
+      "name": "Test flow thoroughly",
+      "description": "Test all paths and conditions in the flow, including error scenarios and bulk operations",
+      "applyTo": "**/main/default/flows/**/*.flow-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "flow-description",
+      "name": "Add flow description",
+      "description": "Document what the flow does, when it runs, and any important business logic",
+      "applyTo": "**/main/default/flows/**/*.flow-meta.xml",
+      "priority": "medium"
+    },
+    {
+      "id": "validation-rule-testing",
+      "name": "Test validation rule",
+      "description": "Test the validation rule in sandbox with real data scenarios before deploying",
+      "applyTo": "**/main/default/objects/**/validationRules/*.validationRule-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "validation-rule-documentation",
+      "name": "Document validation rule",
+      "description": "Add clear error message and description explaining why the validation exists",
+      "applyTo": "**/main/default/objects/**/validationRules/*.validationRule-meta.xml",
+      "priority": "medium"
+    },
+    {
+      "id": "custom-label-translations",
+      "name": "Add label translations",
+      "description": "If your org supports multiple languages, add translations for the custom label",
+      "applyTo": "**/main/default/labels/**/*.labels-meta.xml",
+      "priority": "low"
+    },
+    {
+      "id": "aura-add-to-page",
+      "name": "Add Aura component to page",
+      "description": "Add the Aura component to a Lightning page, app, or community so users can access it",
+      "applyTo": "**/main/default/aura/**/*.cmp",
+      "priority": "high"
+    },
+    {
+      "id": "aura-test-coverage",
+      "name": "Add Aura component tests",
+      "description": "Create test coverage for the Aura component controller and helper",
+      "applyTo": "**/main/default/aura/**/*.cmp",
+      "priority": "medium"
+    },
+    {
+      "id": "static-resource-csp",
+      "name": "Update CSP Trusted Sites",
+      "description": "If static resource references external URLs, add them to CSP Trusted Sites for security",
+      "applyTo": "**/main/default/staticresources/**/*",
+      "priority": "medium"
+    },
+    {
+      "id": "remote-site-settings",
+      "name": "Add Remote Site Settings",
+      "description": "If making callouts to external services, add the endpoint to Remote Site Settings",
+      "applyTo": "**/main/default/classes/**/*.cls",
+      "fileContains": "Http",
+      "priority": "high"
+    },
+    {
+      "id": "named-credential",
+      "name": "Consider using Named Credentials",
+      "description": "For external API calls, consider using Named Credentials instead of hardcoded endpoints",
+      "applyTo": "**/main/default/classes/**/*.cls",
+      "fileContains": "HttpRequest",
+      "priority": "medium"
+    },
+    {
+      "id": "async-apex-limits",
+      "name": "Review async Apex limits",
+      "description": "Ensure the queueable/batch/future/scheduled class respects governor limits for async context",
+      "applyTo": "**/main/default/classes/**/*.cls",
+      "fileContains": "implements Queueable",
+      "priority": "medium"
+    },
+    {
+      "id": "email-template-testing",
+      "name": "Test email template",
+      "description": "Send test emails to verify formatting, merge fields, and content render correctly",
+      "applyTo": "**/main/default/email/**/*.email-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "record-type-assignment",
+      "name": "Assign record type to profiles",
+      "description": "Make the record type available to appropriate profiles and set default record types",
+      "applyTo": "**/main/default/objects/**/recordTypes/*.recordType-meta.xml",
+      "priority": "high"
+    },
+    {
+      "id": "record-type-page-layout",
+      "name": "Assign page layout to record type",
+      "description": "Create or assign the appropriate page layout for this record type",
+      "applyTo": "**/main/default/objects/**/recordTypes/*.recordType-meta.xml",
+      "priority": "high"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "templates": [
+    {
+      "id": "add-tests",
+      "name": "Add unit tests",
+      "description": "Create comprehensive unit tests for this module to ensure code quality and prevent regressions",
+      "applyTo": "src/**/*.{js,ts,jsx,tsx}",
+      "excludeFileContains": "test",
+      "priority": "high"
+    },
+    {
+      "id": "add-documentation",
+      "name": "Add JSDoc/TSDoc comments",
+      "description": "Document the public API with JSDoc/TSDoc comments explaining parameters, return values, and usage examples",
+      "applyTo": "src/**/*.{js,ts}",
+      "fileContains": "export",
+      "priority": "medium"
+    },
+    {
+      "id": "error-handling",
+      "name": "Add error handling",
+      "description": "Implement proper error handling with try-catch blocks and meaningful error messages",
+      "applyTo": "src/**/*.{js,ts}",
+      "fileContains": "async ",
+      "priority": "high"
+    },
+    {
+      "id": "typescript-types",
+      "name": "Add TypeScript types",
+      "description": "Define proper TypeScript interfaces/types for better type safety and developer experience",
+      "applyTo": "src/**/*.ts",
+      "fileContains": "any",
+      "priority": "medium"
+    },
+    {
+      "id": "react-prop-types",
+      "name": "Add prop types validation",
+      "description": "Add PropTypes or TypeScript interfaces to validate component props",
+      "applyTo": "src/**/*.{jsx,tsx}",
+      "fileContains": "export",
+      "priority": "medium"
+    },
+    {
+      "id": "react-accessibility",
+      "name": "Add accessibility attributes",
+      "description": "Ensure component is accessible with proper ARIA labels, keyboard navigation, and semantic HTML",
+      "applyTo": "src/components/**/*.{jsx,tsx}",
+      "priority": "high"
+    },
+    {
+      "id": "api-error-handling",
+      "name": "Handle API errors",
+      "description": "Add proper error handling for API calls including network errors, timeouts, and error responses",
+      "applyTo": "src/**/*.{js,ts}",
+      "fileContains": "fetch(",
+      "priority": "high"
+    },
+    {
+      "id": "env-variables",
+      "name": "Use environment variables",
+      "description": "Move hardcoded API endpoints and secrets to environment variables for security and flexibility",
+      "applyTo": "src/**/*.{js,ts}",
+      "fileContains": "http",
+      "priority": "high"
+    },
+    {
+      "id": "sql-injection",
+      "name": "Prevent SQL injection",
+      "description": "Use parameterized queries or ORM to prevent SQL injection vulnerabilities",
+      "applyTo": "src/**/*.{js,ts,py}",
+      "fileContains": "SELECT",
+      "priority": "high"
+    },
+    {
+      "id": "input-validation",
+      "name": "Add input validation",
+      "description": "Validate and sanitize user inputs to prevent security vulnerabilities",
+      "applyTo": "src/**/*.{js,ts}",
+      "fileContains": "req.body",
+      "priority": "high"
+    },
+    {
+      "id": "dependency-security",
+      "name": "Review dependencies",
+      "description": "Run npm audit or similar to check for security vulnerabilities in dependencies",
+      "applyTo": "package.json",
+      "priority": "medium"
+    },
+    {
+      "id": "git-ignore-secrets",
+      "name": "Update .gitignore",
+      "description": "Ensure sensitive files (.env, credentials, etc.) are in .gitignore to prevent accidental commits",
+      "applyTo": ".env*",
+      "priority": "high"
+    },
+    {
+      "id": "readme-update",
+      "name": "Update README",
+      "description": "Update README.md with usage instructions, installation steps, and examples for new features",
+      "applyTo": "src/**/*.{js,ts,py}",
+      "fileContains": "export",
+      "priority": "low"
+    },
+    {
+      "id": "changelog-update",
+      "name": "Update CHANGELOG",
+      "description": "Document the changes in CHANGELOG.md following semantic versioning",
+      "applyTo": "src/**/*",
+      "priority": "low"
+    },
+    {
+      "id": "code-review",
+      "name": "Request code review",
+      "description": "Create a pull request and request review from team members before merging",
+      "applyTo": "src/**/*",
+      "priority": "high"
+    },
+    {
+      "id": "performance-optimization",
+      "name": "Check performance",
+      "description": "Profile the code and optimize any performance bottlenecks (use React.memo, useMemo, useCallback for React)",
+      "applyTo": "src/**/*.{jsx,tsx}",
+      "priority": "medium"
+    },
+    {
+      "id": "responsive-design",
+      "name": "Test responsive design",
+      "description": "Verify the UI works correctly on mobile, tablet, and desktop screen sizes",
+      "applyTo": "src/components/**/*.{jsx,tsx,css,scss}",
+      "priority": "high"
+    },
+    {
+      "id": "browser-compatibility",
+      "name": "Test browser compatibility",
+      "description": "Test in Chrome, Firefox, Safari, and Edge to ensure cross-browser compatibility",
+      "applyTo": "src/**/*.{jsx,tsx}",
+      "priority": "medium"
+    },
+    {
+      "id": "docker-compose",
+      "name": "Update docker-compose",
+      "description": "Update docker-compose.yml with new services or environment variables",
+      "applyTo": "Dockerfile",
+      "priority": "medium"
+    },
+    {
+      "id": "ci-cd-pipeline",
+      "name": "Update CI/CD pipeline",
+      "description": "Update GitHub Actions, Jenkins, or other CI/CD configuration for new build steps",
+      "applyTo": ".github/workflows/**/*.yml",
+      "priority": "medium"
+    }
+  ]
+}

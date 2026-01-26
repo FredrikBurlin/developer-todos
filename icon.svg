@@ -1,0 +1,39 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="check-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="128" height="128" rx="24" fill="url(#bg-gradient)"/>
+
+  <!-- Checklist paper -->
+  <rect x="24" y="20" width="80" height="88" rx="4" fill="white" opacity="0.95"/>
+
+  <!-- Checklist lines and checkboxes -->
+
+  <!-- First item - checked -->
+  <rect x="32" y="32" width="12" height="12" rx="2" fill="url(#check-gradient)"/>
+  <path d="M 35 38 L 38 41 L 43 34" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="50" y1="38" x2="90" y2="38" stroke="#333" stroke-width="2" stroke-linecap="round" opacity="0.3" stroke-dasharray="2,2"/>
+
+  <!-- Second item - checked -->
+  <rect x="32" y="52" width="12" height="12" rx="2" fill="url(#check-gradient)"/>
+  <path d="M 35 58 L 38 61 L 43 54" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="50" y1="58" x2="90" y2="58" stroke="#333" stroke-width="2" stroke-linecap="round" opacity="0.3" stroke-dasharray="2,2"/>
+
+  <!-- Third item - unchecked -->
+  <rect x="32" y="72" width="12" height="12" rx="2" fill="none" stroke="#999" stroke-width="2"/>
+  <line x1="50" y1="78" x2="90" y2="78" stroke="#333" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- Fourth item - unchecked -->
+  <rect x="32" y="92" width="12" height="12" rx="2" fill="none" stroke="#999" stroke-width="2"/>
+  <line x1="50" y1="98" x2="90" y2="98" stroke="#333" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+</svg>

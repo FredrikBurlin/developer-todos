@@ -1,0 +1,159 @@
+{
+  "name": "developer-todos",
+  "displayName": "Developer Todos",
+  "description": "Branch-aware todo management with smart template matching. Never forget common tasks when working on features.",
+  "version": "0.1.0",
+  "publisher": "NordicCloudLabs",
+  "author": {
+    "name": "Fredrik Burlin"
+  },
+  "license": "MIT",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "todo",
+    "task",
+    "checklist",
+    "git",
+    "branch",
+    "salesforce",
+    "productivity",
+    "developer",
+    "workflow"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FredrikBurlin/developer-todos"
+  },
+  "bugs": {
+    "url": "https://github.com/FredrikBurlin/developer-todos/issues"
+  },
+  "homepage": "https://github.com/FredrikBurlin/developer-todos#readme",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "developer-todos",
+          "title": "Developer Todos",
+          "icon": "$(checklist)"
+        }
+      ]
+    },
+    "views": {
+      "developer-todos": [
+        {
+          "id": "developerTodosView",
+          "name": "Tasks"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "developerTodos.refresh",
+        "title": "Refresh Todos",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "developerTodos.toggleFilter",
+        "title": "Toggle Filter (All/Remaining)",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "developerTodos.completeTodo",
+        "title": "Complete Todo",
+        "icon": "$(check)"
+      },
+      {
+        "command": "developerTodos.reopenTodo",
+        "title": "Reopen Todo",
+        "icon": "$(circle-outline)"
+      },
+      {
+        "command": "developerTodos.navigateToFile",
+        "title": "Navigate to File",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "developerTodos.openFile",
+        "title": "Open File"
+      },
+      {
+        "command": "developerTodos.showTemplate",
+        "title": "Show Template Details"
+      },
+      {
+        "command": "developerTodos.clearBranchTodos",
+        "title": "Clear All Todos for Current Branch",
+        "icon": "$(clear-all)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "developerTodos.toggleFilter",
+          "when": "view == developerTodosView",
+          "group": "navigation"
+        },
+        {
+          "command": "developerTodos.refresh",
+          "when": "view == developerTodosView",
+          "group": "navigation"
+        },
+        {
+          "command": "developerTodos.clearBranchTodos",
+          "when": "view == developerTodosView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "developerTodos.navigateToFile",
+          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemCompleted)",
+          "group": "inline"
+        },
+        {
+          "command": "developerTodos.completeTodo",
+          "when": "view == developerTodosView && viewItem == todoItem",
+          "group": "inline"
+        },
+        {
+          "command": "developerTodos.reopenTodo",
+          "when": "view == developerTodosView && viewItem == todoItemCompleted",
+          "group": "inline"
+        },
+        {
+          "command": "developerTodos.showTemplate",
+          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemCompleted)"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0",
+    "sharp": "^0.34.5",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "minimatch": "^9.0.3"
+  }
+}

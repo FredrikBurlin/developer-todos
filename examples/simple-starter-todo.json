@@ -1,0 +1,27 @@
+{
+  "templates": [
+    {
+      "id": "add-tests",
+      "name": "Add tests",
+      "description": "Create unit tests for this file",
+      "applyTo": "src/**/*.{js,ts}",
+      "excludeFileContains": "test",
+      "priority": "high"
+    },
+    {
+      "id": "add-docs",
+      "name": "Add documentation",
+      "description": "Document this code with comments explaining what it does",
+      "applyTo": "src/**/*.{js,ts}",
+      "fileContains": "export",
+      "priority": "medium"
+    },
+    {
+      "id": "code-review",
+      "name": "Request code review",
+      "description": "Create a pull request and get team review before merging",
+      "applyTo": "src/**/*",
+      "priority": "high"
+    }
+  ]
+}
