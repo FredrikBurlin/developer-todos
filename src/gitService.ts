@@ -8,13 +8,13 @@ export interface GitAPI {
 
 export interface Repository {
   state: RepositoryState;
-  onDidRunGitStatus: vscode.Event<void>;
 }
 
 export interface RepositoryState {
   HEAD: Branch | undefined;
   workingTreeChanges: Change[];
   indexChanges: Change[];
+  onDidChange: vscode.Event<void>;
 }
 
 export interface Branch {
@@ -77,8 +77,9 @@ export class GitService {
 
     let lastBranch = this.getCurrentBranch();
 
-    // Listen to git status changes (includes branch changes)
-    this.repository.onDidRunGitStatus(() => {
+    // Listen to repository state changes (includes branch changes)
+    // Using state.onDidChange for broader compatibility across VSCode versions
+    this.repository.state.onDidChange(() => {
       const currentBranch = this.getCurrentBranch();
       if (currentBranch !== lastBranch) {
         lastBranch = currentBranch;

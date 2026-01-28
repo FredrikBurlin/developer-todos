@@ -1,0 +1,147 @@
+{
+  "templates": [
+    {
+      "id": "go-test",
+      "name": "Add unit tests",
+      "description": "Create _test.go file with unit tests. Use table-driven tests for comprehensive coverage.",
+      "applyTo": "**/*.go",
+      "excludeFileContains": "_test.go",
+      "priority": "high"
+    },
+    {
+      "id": "go-godoc",
+      "name": "Add GoDoc comments",
+      "description": "Add GoDoc-style comments to exported functions, types, and packages.",
+      "applyTo": "**/*.go",
+      "fileContains": "func ",
+      "priority": "medium"
+    },
+    {
+      "id": "go-error-handling",
+      "name": "Handle errors properly",
+      "description": "Ensure all errors are checked and handled. Don't ignore error returns.",
+      "applyTo": "**/*.go",
+      "fileContains": "err :=",
+      "priority": "high"
+    },
+    {
+      "id": "go-error-wrap",
+      "name": "Wrap errors with context",
+      "description": "Use fmt.Errorf with %w or errors.Wrap to add context to errors.",
+      "applyTo": "**/*.go",
+      "fileContains": "return err",
+      "priority": "medium"
+    },
+    {
+      "id": "go-interface",
+      "name": "Consider interface extraction",
+      "description": "Extract interface for better testing and dependency injection.",
+      "applyTo": "**/*.go",
+      "fileContains": "struct {",
+      "priority": "low"
+    },
+    {
+      "id": "go-context",
+      "name": "Add context parameter",
+      "description": "Add context.Context as first parameter for cancellation and timeout support.",
+      "applyTo": "**/*.go",
+      "fileContains": "func ",
+      "excludeFileContains": "context.Context",
+      "priority": "medium"
+    },
+    {
+      "id": "go-http-handler-test",
+      "name": "Test HTTP handler",
+      "description": "Add httptest-based tests for this HTTP handler.",
+      "applyTo": "**/*.go",
+      "fileContains": "http.Handler",
+      "priority": "high"
+    },
+    {
+      "id": "go-middleware",
+      "name": "Add middleware",
+      "description": "Consider adding logging, auth, or rate limiting middleware.",
+      "applyTo": "**/*.go",
+      "fileContains": "http.Handle",
+      "priority": "medium"
+    },
+    {
+      "id": "go-graceful-shutdown",
+      "name": "Implement graceful shutdown",
+      "description": "Add graceful shutdown handling for HTTP servers and background workers.",
+      "applyTo": "**/*.go",
+      "fileContains": "ListenAndServe",
+      "priority": "high"
+    },
+    {
+      "id": "go-validate-input",
+      "name": "Validate input",
+      "description": "Add input validation for API endpoints. Consider using go-playground/validator.",
+      "applyTo": "**/*.go",
+      "fileContains": "json.Unmarshal",
+      "priority": "high"
+    },
+    {
+      "id": "go-sql-injection",
+      "name": "Prevent SQL injection",
+      "description": "Use parameterized queries instead of string concatenation for SQL.",
+      "applyTo": "**/*.go",
+      "fileContains": "db.Query",
+      "priority": "high"
+    },
+    {
+      "id": "go-db-transaction",
+      "name": "Use database transaction",
+      "description": "Wrap related database operations in a transaction for data integrity.",
+      "applyTo": "**/*.go",
+      "fileContains": "db.Exec",
+      "priority": "medium"
+    },
+    {
+      "id": "go-benchmark",
+      "name": "Add benchmarks",
+      "description": "Add benchmark tests for performance-critical code using testing.B.",
+      "applyTo": "**/*.go",
+      "fileContains": "func ",
+      "priority": "low"
+    },
+    {
+      "id": "go-lint",
+      "name": "Run golangci-lint",
+      "description": "Run golangci-lint to check for common issues and style violations.",
+      "applyTo": "**/*.go",
+      "priority": "medium"
+    },
+    {
+      "id": "go-mod-tidy",
+      "name": "Run go mod tidy",
+      "description": "Run 'go mod tidy' to clean up go.mod and go.sum.",
+      "applyTo": "go.mod",
+      "priority": "low"
+    },
+    {
+      "id": "go-concurrent-safety",
+      "name": "Check concurrent safety",
+      "description": "Ensure goroutines don't have race conditions. Use -race flag in tests.",
+      "applyTo": "**/*.go",
+      "fileContains": "go func",
+      "priority": "high"
+    },
+    {
+      "id": "go-channel-close",
+      "name": "Close channels properly",
+      "description": "Ensure channels are closed by the sender to prevent goroutine leaks.",
+      "applyTo": "**/*.go",
+      "fileContains": "make(chan",
+      "priority": "high"
+    },
+    {
+      "id": "go-defer-cleanup",
+      "name": "Add defer for cleanup",
+      "description": "Use defer for cleanup operations like closing files, connections, etc.",
+      "applyTo": "**/*.go",
+      "fileContains": ".Open(",
+      "priority": "medium"
+    }
+  ]
+}

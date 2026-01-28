@@ -2,7 +2,7 @@
   "name": "developer-todos",
   "displayName": "Developer Todos",
   "description": "Branch-aware todo management with smart template matching. Never forget common tasks when working on features.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "NordicCloudLabs",
   "author": {
     "name": "Fredrik Burlin"

@@ -10,6 +10,9 @@ vsc-extension-quickstart.md
 **/*.ts
 !out/**/*.js
 node_modules/**
+!node_modules/minimatch/**
+!node_modules/brace-expansion/**
+!node_modules/balanced-match/**
 .github/**
 *.vsix
 icon.svg

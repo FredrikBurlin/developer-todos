@@ -1,0 +1,177 @@
+{
+  "templates": [
+    {
+      "id": "csharp-unit-test",
+      "name": "Add unit tests",
+      "description": "Create xUnit/NUnit tests with high code coverage. Use Moq for mocking dependencies.",
+      "applyTo": "**/*.cs",
+      "excludeFileContains": "[Fact]",
+      "priority": "high"
+    },
+    {
+      "id": "csharp-xml-docs",
+      "name": "Add XML documentation",
+      "description": "Add XML documentation comments (///) for public classes, methods, and properties.",
+      "applyTo": "**/*.cs",
+      "fileContains": "public ",
+      "excludeFileContains": "/// <summary>",
+      "priority": "medium"
+    },
+    {
+      "id": "aspnet-controller-test",
+      "name": "Add controller tests",
+      "description": "Create integration tests using WebApplicationFactory or unit tests with mocked services.",
+      "applyTo": "**/*Controller.cs",
+      "fileContains": "[ApiController]",
+      "priority": "high"
+    },
+    {
+      "id": "aspnet-validation",
+      "name": "Add model validation",
+      "description": "Add Data Annotations ([Required], [StringLength], etc.) to request DTOs.",
+      "applyTo": "**/*.cs",
+      "fileContains": "[HttpPost]",
+      "priority": "high"
+    },
+    {
+      "id": "aspnet-authorization",
+      "name": "Add authorization",
+      "description": "Add [Authorize] attribute or policy-based authorization for protected endpoints.",
+      "applyTo": "**/*Controller.cs",
+      "fileContains": "[ApiController]",
+      "priority": "high"
+    },
+    {
+      "id": "aspnet-exception-filter",
+      "name": "Add exception handling",
+      "description": "Add global exception handling middleware or IExceptionFilter for consistent error responses.",
+      "applyTo": "**/*Controller.cs",
+      "fileContains": "[ApiController]",
+      "priority": "high"
+    },
+    {
+      "id": "ef-migration",
+      "name": "Create EF migration",
+      "description": "Run 'dotnet ef migrations add' for Entity Framework schema changes.",
+      "applyTo": "**/*.cs",
+      "fileContains": "DbSet<",
+      "priority": "high"
+    },
+    {
+      "id": "ef-entity-config",
+      "name": "Configure entity",
+      "description": "Add Fluent API configuration in OnModelCreating or IEntityTypeConfiguration.",
+      "applyTo": "**/*.cs",
+      "fileContains": "public class",
+      "priority": "medium"
+    },
+    {
+      "id": "di-registration",
+      "name": "Register in DI container",
+      "description": "Register this service in Program.cs or Startup.cs for dependency injection.",
+      "applyTo": "**/*.cs",
+      "fileContains": "public class",
+      "priority": "high"
+    },
+    {
+      "id": "csharp-interface",
+      "name": "Extract interface",
+      "description": "Create interface for better testability and dependency injection.",
+      "applyTo": "**/*Service.cs",
+      "fileContains": "public class",
+      "excludeFileContains": ": I",
+      "priority": "medium"
+    },
+    {
+      "id": "csharp-async",
+      "name": "Use async/await",
+      "description": "Convert to async/await for I/O-bound operations. Add Async suffix to method names.",
+      "applyTo": "**/*.cs",
+      "fileContains": ".Result",
+      "priority": "high"
+    },
+    {
+      "id": "csharp-cancellation-token",
+      "name": "Add CancellationToken",
+      "description": "Add CancellationToken parameter to async methods for proper cancellation support.",
+      "applyTo": "**/*.cs",
+      "fileContains": "async Task",
+      "excludeFileContains": "CancellationToken",
+      "priority": "medium"
+    },
+    {
+      "id": "csharp-null-checks",
+      "name": "Add null checks",
+      "description": "Use nullable reference types, null checks, or ArgumentNullException.ThrowIfNull.",
+      "applyTo": "**/*.cs",
+      "fileContains": "public ",
+      "priority": "medium"
+    },
+    {
+      "id": "aspnet-logging",
+      "name": "Add logging",
+      "description": "Inject ILogger<T> and add structured logging for important operations.",
+      "applyTo": "**/*.cs",
+      "fileContains": "public class",
+      "excludeFileContains": "ILogger",
+      "priority": "low"
+    },
+    {
+      "id": "aspnet-swagger",
+      "name": "Add Swagger documentation",
+      "description": "Add XML comments and Swagger attributes for API documentation.",
+      "applyTo": "**/*Controller.cs",
+      "fileContains": "[ApiController]",
+      "priority": "medium"
+    },
+    {
+      "id": "csharp-dispose",
+      "name": "Implement IDisposable",
+      "description": "Implement IDisposable pattern for classes that hold unmanaged resources.",
+      "applyTo": "**/*.cs",
+      "fileContains": "Stream",
+      "excludeFileContains": "IDisposable",
+      "priority": "high"
+    },
+    {
+      "id": "aspnet-health-check",
+      "name": "Add health check",
+      "description": "Add health check endpoint for monitoring and container orchestration.",
+      "applyTo": "**/Program.cs",
+      "fileContains": "WebApplication",
+      "priority": "medium"
+    },
+    {
+      "id": "csharp-configuration",
+      "name": "Move to configuration",
+      "description": "Move hardcoded values to appsettings.json using IOptions<T> pattern.",
+      "applyTo": "**/*.cs",
+      "fileContains": "const string",
+      "priority": "medium"
+    },
+    {
+      "id": "aspnet-cors",
+      "name": "Configure CORS",
+      "description": "Add CORS policy in Program.cs for cross-origin requests.",
+      "applyTo": "**/*Controller.cs",
+      "fileContains": "[ApiController]",
+      "priority": "medium"
+    },
+    {
+      "id": "csharp-sql-injection",
+      "name": "Prevent SQL injection",
+      "description": "Use parameterized queries or EF Core instead of raw SQL string concatenation.",
+      "applyTo": "**/*.cs",
+      "fileContains": "SqlCommand",
+      "priority": "high"
+    },
+    {
+      "id": "csharp-secrets",
+      "name": "Use Secret Manager",
+      "description": "Move sensitive data to User Secrets or Azure Key Vault. Never hardcode secrets.",
+      "applyTo": "**/appsettings.json",
+      "fileContains": "ConnectionString",
+      "priority": "high"
+    }
+  ]
+}

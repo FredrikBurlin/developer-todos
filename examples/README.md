@@ -4,10 +4,53 @@ This folder contains ready-to-use `.todo.json` template files for different deve
 
 ## Quick Start
 
-1. **Copy one of these files** to your workspace root
-2. **Rename it to** `.todo.json`
+1. **Download a template** using one of the methods below
+2. **Save it as** `.todo.json` in your workspace root
 3. **Customize** the templates for your needs
 4. Start coding - todos will appear automatically!
+
+## Download Templates
+
+| Template | Description | Download |
+|----------|-------------|----------|
+| Simple Starter | Minimal template for learning | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/simple-starter-todo.json) |
+| General Development | JavaScript, TypeScript, React | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/general-development-todo.json) |
+| Salesforce | Apex, LWC, Flows, Triggers | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/salesforce-todo.json) |
+| Python/Django | Python, Django, Flask, FastAPI | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/python-todo.json) |
+| Go | Go/Golang projects | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/go-todo.json) |
+| Rust | Rust projects | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/rust-todo.json) |
+| Java/Spring | Java, Spring Boot, Maven | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/java-todo.json) |
+| C#/.NET | C#, ASP.NET Core, Entity Framework | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/csharp-todo.json) |
+
+### Quick Install with curl
+
+```bash
+# Simple Starter
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/simple-starter-todo.json
+
+# General Development (JS/TS/React)
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/general-development-todo.json
+
+# Salesforce
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/salesforce-todo.json
+
+# Python/Django
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/python-todo.json
+
+# Go
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/go-todo.json
+
+# Rust
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/rust-todo.json
+
+# Java/Spring
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/java-todo.json
+
+# C#/.NET
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/csharp-todo.json
+```
+
+---
 
 ## Available Examples
 
@@ -83,6 +126,97 @@ Comprehensive templates for common development tasks:
 **And more:** Validation rules, email templates, record types, Aura components, static resources
 
 **Use this if:** You're a Salesforce developer or working on Force.com projects.
+
+---
+
+### 🐍 [python-todo.json](python-todo.json)
+**Best for:** Python development (Django, Flask, FastAPI)
+
+18 templates for Python best practices:
+- Unit testing with pytest
+- Docstrings and type hints
+- Django model migrations and admin
+- Flask/FastAPI routes and schemas
+- Error handling and logging
+- Celery task testing
+- Input validation and security
+- Alembic migrations
+
+**Use this if:** You're working on Python web applications or APIs.
+
+---
+
+### 🔵 [go-todo.json](go-todo.json)
+**Best for:** Go/Golang projects
+
+18 templates for Go development:
+- Table-driven tests
+- GoDoc comments
+- Error handling and wrapping
+- Context and cancellation
+- HTTP handler testing
+- Graceful shutdown
+- SQL injection prevention
+- Concurrent safety and race detection
+- Benchmarks and linting
+
+**Use this if:** You're building Go services or applications.
+
+---
+
+### 🦀 [rust-todo.json](rust-todo.json)
+**Best for:** Rust projects
+
+18 templates for Rust development:
+- Unit and integration tests
+- Documentation comments
+- Error handling with Result<T, E>
+- Unsafe code review
+- Async runtime setup
+- Serde serialization
+- Clippy and formatting
+- Security audits
+- Benchmarks with criterion
+
+**Use this if:** You're developing systems software in Rust.
+
+---
+
+### ☕ [java-todo.json](java-todo.json)
+**Best for:** Java/Spring Boot development
+
+20 templates for Java best practices:
+- JUnit 5 unit tests
+- Javadoc documentation
+- Spring controller/service/repository tests
+- Input validation and security
+- Exception handling
+- Transaction management
+- JPA entity configuration
+- Database migrations (Flyway/Liquibase)
+- OpenAPI documentation
+- Caching and logging
+
+**Use this if:** You're building Java enterprise applications with Spring.
+
+---
+
+### 💜 [csharp-todo.json](csharp-todo.json)
+**Best for:** C#/.NET/ASP.NET Core development
+
+21 templates for .NET best practices:
+- xUnit/NUnit tests with Moq
+- XML documentation
+- Controller and integration tests
+- Model validation and authorization
+- Entity Framework migrations
+- Dependency injection
+- Async/await and CancellationToken
+- Swagger documentation
+- Health checks and configuration
+- Secret management
+
+**Use this if:** You're building .NET applications with ASP.NET Core.
 
 ---
 
@@ -233,14 +367,14 @@ Only trigger todos when specific content exists:
 Have a great template set for a specific framework or platform? Consider contributing it back!
 
 Examples we'd love to see:
-- Python/Django
 - Ruby on Rails
 - Flutter/Dart
-- Go
-- Rust
-- Mobile (iOS/Android)
-- DevOps/Infrastructure
+- Swift/iOS
+- Kotlin/Android
+- PHP/Laravel
+- DevOps/Infrastructure (Terraform, Kubernetes)
+- Vue.js/Angular specific
 
 ---
 
-**Happy coding!** 🚀 Never forget the important stuff again.
+**Happy coding!** Never forget the important stuff again.

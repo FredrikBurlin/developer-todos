@@ -1,0 +1,164 @@
+{
+  "templates": [
+    {
+      "id": "java-unit-test",
+      "name": "Add unit tests",
+      "description": "Create JUnit 5 unit tests in src/test/java. Aim for 80%+ code coverage.",
+      "applyTo": "**/*.java",
+      "excludeFileContains": "@Test",
+      "priority": "high"
+    },
+    {
+      "id": "java-javadoc",
+      "name": "Add Javadoc comments",
+      "description": "Add Javadoc comments to public classes, methods, and fields.",
+      "applyTo": "**/*.java",
+      "fileContains": "public ",
+      "excludeFileContains": "/**",
+      "priority": "medium"
+    },
+    {
+      "id": "spring-controller-test",
+      "name": "Add controller tests",
+      "description": "Create MockMvc tests for this REST controller using @WebMvcTest.",
+      "applyTo": "**/*Controller.java",
+      "fileContains": "@RestController",
+      "priority": "high"
+    },
+    {
+      "id": "spring-service-test",
+      "name": "Add service tests",
+      "description": "Create unit tests for this service with mocked dependencies using Mockito.",
+      "applyTo": "**/*Service.java",
+      "fileContains": "@Service",
+      "priority": "high"
+    },
+    {
+      "id": "spring-repository-test",
+      "name": "Add repository tests",
+      "description": "Create @DataJpaTest tests for this repository.",
+      "applyTo": "**/*Repository.java",
+      "fileContains": "JpaRepository",
+      "priority": "medium"
+    },
+    {
+      "id": "spring-validation",
+      "name": "Add input validation",
+      "description": "Add @Valid and Bean Validation annotations (@NotNull, @Size, etc.) for request DTOs.",
+      "applyTo": "**/*Controller.java",
+      "fileContains": "@PostMapping",
+      "priority": "high"
+    },
+    {
+      "id": "spring-exception-handler",
+      "name": "Add exception handling",
+      "description": "Add @ExceptionHandler or use @ControllerAdvice for proper error responses.",
+      "applyTo": "**/*Controller.java",
+      "fileContains": "@RestController",
+      "priority": "high"
+    },
+    {
+      "id": "spring-security",
+      "name": "Configure security",
+      "description": "Add @PreAuthorize or configure endpoint security in SecurityConfig.",
+      "applyTo": "**/*Controller.java",
+      "fileContains": "@RestController",
+      "priority": "high"
+    },
+    {
+      "id": "spring-transaction",
+      "name": "Add transaction management",
+      "description": "Add @Transactional for methods that modify multiple entities.",
+      "applyTo": "**/*Service.java",
+      "fileContains": "repository.save",
+      "priority": "high"
+    },
+    {
+      "id": "jpa-entity-equals",
+      "name": "Implement equals/hashCode",
+      "description": "Implement equals() and hashCode() for JPA entity using business key.",
+      "applyTo": "**/*.java",
+      "fileContains": "@Entity",
+      "priority": "medium"
+    },
+    {
+      "id": "jpa-migration",
+      "name": "Create database migration",
+      "description": "Create Flyway or Liquibase migration for schema changes.",
+      "applyTo": "**/*.java",
+      "fileContains": "@Entity",
+      "priority": "high"
+    },
+    {
+      "id": "spring-dto",
+      "name": "Create DTO",
+      "description": "Create separate DTO classes instead of exposing entities directly.",
+      "applyTo": "**/*Controller.java",
+      "fileContains": "@Entity",
+      "priority": "medium"
+    },
+    {
+      "id": "spring-logging",
+      "name": "Add logging",
+      "description": "Add SLF4J logging for important operations and error cases.",
+      "applyTo": "**/*.java",
+      "fileContains": "public ",
+      "excludeFileContains": "Logger",
+      "priority": "low"
+    },
+    {
+      "id": "spring-actuator",
+      "name": "Configure actuator endpoints",
+      "description": "Configure Spring Actuator endpoints for monitoring and health checks.",
+      "applyTo": "**/application.properties",
+      "priority": "medium"
+    },
+    {
+      "id": "spring-profiles",
+      "name": "Configure profiles",
+      "description": "Add environment-specific configuration using Spring profiles.",
+      "applyTo": "**/application.properties",
+      "priority": "medium"
+    },
+    {
+      "id": "maven-dependency",
+      "name": "Update pom.xml",
+      "description": "Add new dependencies to pom.xml and run 'mvn dependency:resolve'.",
+      "applyTo": "**/*.java",
+      "fileContains": "import ",
+      "priority": "medium"
+    },
+    {
+      "id": "java-null-safety",
+      "name": "Add null safety",
+      "description": "Use Optional<T>, @Nullable, @NonNull annotations to prevent NPEs.",
+      "applyTo": "**/*.java",
+      "fileContains": "return null",
+      "priority": "medium"
+    },
+    {
+      "id": "spring-api-docs",
+      "name": "Add OpenAPI documentation",
+      "description": "Add Swagger/OpenAPI annotations (@Operation, @ApiResponse) for API documentation.",
+      "applyTo": "**/*Controller.java",
+      "fileContains": "@RestController",
+      "priority": "medium"
+    },
+    {
+      "id": "java-sql-injection",
+      "name": "Prevent SQL injection",
+      "description": "Use parameterized queries or JPA Criteria API instead of string concatenation.",
+      "applyTo": "**/*.java",
+      "fileContains": "@Query",
+      "priority": "high"
+    },
+    {
+      "id": "spring-cache",
+      "name": "Consider caching",
+      "description": "Add @Cacheable for frequently accessed, rarely changing data.",
+      "applyTo": "**/*Service.java",
+      "fileContains": "findBy",
+      "priority": "low"
+    }
+  ]
+}

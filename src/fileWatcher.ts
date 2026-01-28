@@ -58,6 +58,49 @@ export class FileWatcher {
     });
 
     this.disposables.push(configWatcher);
+
+    // Listen to Git state changes (staging, unstaging, etc.)
+    // This ensures todos update when files are staged via git commands
+    this.setupGitStateListener();
+  }
+
+  /**
+   * Setup Git state change listener
+   */
+  private async setupGitStateListener(): Promise<void> {
+    // Use a debounced refresh for git state changes
+    let gitStateTimer: NodeJS.Timeout | undefined;
+    const GIT_DEBOUNCE = 500; // Shorter delay for Git state changes
+
+    const gitExtension = vscode.extensions.getExtension('vscode.git');
+    if (!gitExtension) {
+      return;
+    }
+
+    try {
+      const git = await gitExtension.activate();
+      const api = git.getAPI(1);
+      if (api && api.repositories.length > 0) {
+        const repo = api.repositories[0];
+
+        // Listen to repository state changes
+        const stateListener = repo.state.onDidChange(() => {
+          // Debounce to avoid excessive refreshes
+          if (gitStateTimer) {
+            clearTimeout(gitStateTimer);
+          }
+
+          gitStateTimer = setTimeout(async () => {
+            // Refresh all todos when git state changes
+            await this.todoManager.refreshTodos();
+          }, GIT_DEBOUNCE);
+        });
+
+        this.disposables.push(stateListener);
+      }
+    } catch (error) {
+      console.error('Failed to setup Git state listener:', error);
+    }
   }
 
   /**

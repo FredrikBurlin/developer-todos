@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm run compile:*)",
       "Bash(npm install:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npx @vscode/vsce package)"
     ]
   }
 }

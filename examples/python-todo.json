@@ -1,0 +1,150 @@
+{
+  "templates": [
+    {
+      "id": "python-test",
+      "name": "Add unit tests",
+      "description": "Create pytest unit tests for this module. Aim for 80%+ coverage.",
+      "applyTo": "**/*.py",
+      "excludeFileContains": "test_",
+      "priority": "high"
+    },
+    {
+      "id": "python-docstring",
+      "name": "Add docstrings",
+      "description": "Add Google-style or NumPy-style docstrings to functions and classes.",
+      "applyTo": "**/*.py",
+      "fileContains": "def ",
+      "excludeFileContains": "\"\"\"",
+      "priority": "medium"
+    },
+    {
+      "id": "python-type-hints",
+      "name": "Add type hints",
+      "description": "Add Python type hints for better IDE support and code clarity.",
+      "applyTo": "**/*.py",
+      "fileContains": "def ",
+      "priority": "medium"
+    },
+    {
+      "id": "django-model-migration",
+      "name": "Create database migration",
+      "description": "Run 'python manage.py makemigrations' to create migration for model changes.",
+      "applyTo": "**/models.py",
+      "fileContains": "models.Model",
+      "priority": "high"
+    },
+    {
+      "id": "django-admin-register",
+      "name": "Register in Django admin",
+      "description": "Register this model in admin.py for admin interface access.",
+      "applyTo": "**/models.py",
+      "fileContains": "models.Model",
+      "priority": "medium"
+    },
+    {
+      "id": "django-view-permission",
+      "name": "Add view permissions",
+      "description": "Add permission_classes or login_required decorator for access control.",
+      "applyTo": "**/views.py",
+      "fileContains": "def ",
+      "priority": "high"
+    },
+    {
+      "id": "django-url-pattern",
+      "name": "Add URL pattern",
+      "description": "Add URL pattern in urls.py to expose this view.",
+      "applyTo": "**/views.py",
+      "fileContains": "def ",
+      "priority": "high"
+    },
+    {
+      "id": "django-serializer",
+      "name": "Create serializer",
+      "description": "Create a DRF serializer for this model in serializers.py.",
+      "applyTo": "**/models.py",
+      "fileContains": "models.Model",
+      "priority": "medium"
+    },
+    {
+      "id": "flask-route-test",
+      "name": "Test Flask route",
+      "description": "Add integration tests for this Flask route using pytest-flask.",
+      "applyTo": "**/*.py",
+      "fileContains": "@app.route",
+      "priority": "high"
+    },
+    {
+      "id": "fastapi-schema",
+      "name": "Add Pydantic schema",
+      "description": "Create Pydantic model for request/response validation.",
+      "applyTo": "**/*.py",
+      "fileContains": "@app.",
+      "priority": "medium"
+    },
+    {
+      "id": "python-error-handling",
+      "name": "Add error handling",
+      "description": "Add try/except blocks with proper exception handling and logging.",
+      "applyTo": "**/*.py",
+      "fileContains": "def ",
+      "priority": "medium"
+    },
+    {
+      "id": "python-logging",
+      "name": "Add logging",
+      "description": "Add logging statements for debugging and monitoring.",
+      "applyTo": "**/*.py",
+      "fileContains": "def ",
+      "excludeFileContains": "logging",
+      "priority": "low"
+    },
+    {
+      "id": "python-env-vars",
+      "name": "Check environment variables",
+      "description": "Ensure sensitive values use environment variables, not hardcoded strings.",
+      "applyTo": "**/*.py",
+      "fileContains": "=",
+      "priority": "high"
+    },
+    {
+      "id": "requirements-update",
+      "name": "Update requirements.txt",
+      "description": "Add new dependencies to requirements.txt or pyproject.toml.",
+      "applyTo": "**/*.py",
+      "fileContains": "import ",
+      "priority": "medium"
+    },
+    {
+      "id": "python-async",
+      "name": "Consider async implementation",
+      "description": "Consider using async/await for I/O-bound operations to improve performance.",
+      "applyTo": "**/*.py",
+      "fileContains": "requests.",
+      "priority": "low"
+    },
+    {
+      "id": "celery-task-test",
+      "name": "Test Celery task",
+      "description": "Add tests for this Celery task, including edge cases and failure scenarios.",
+      "applyTo": "**/tasks.py",
+      "fileContains": "@shared_task",
+      "priority": "high"
+    },
+    {
+      "id": "python-security-input",
+      "name": "Validate user input",
+      "description": "Validate and sanitize all user input to prevent injection attacks.",
+      "applyTo": "**/*.py",
+      "fileContains": "request.",
+      "priority": "high"
+    },
+    {
+      "id": "alembic-migration",
+      "name": "Create Alembic migration",
+      "description": "Run 'alembic revision --autogenerate' to create migration for SQLAlchemy model changes.",
+      "applyTo": "**/models.py",
+      "fileContains": "Base",
+      "priority": "high"
+    }
+  ]
+}

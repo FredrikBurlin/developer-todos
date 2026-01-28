@@ -1,0 +1,146 @@
+{
+  "templates": [
+    {
+      "id": "rust-test",
+      "name": "Add unit tests",
+      "description": "Add #[cfg(test)] module with unit tests. Use #[test] attribute for test functions.",
+      "applyTo": "**/*.rs",
+      "excludeFileContains": "#[cfg(test)]",
+      "priority": "high"
+    },
+    {
+      "id": "rust-doc-comments",
+      "name": "Add documentation comments",
+      "description": "Add /// doc comments for public items. Run 'cargo doc' to generate docs.",
+      "applyTo": "**/*.rs",
+      "fileContains": "pub fn",
+      "priority": "medium"
+    },
+    {
+      "id": "rust-error-handling",
+      "name": "Implement proper error handling",
+      "description": "Use Result<T, E> instead of panic! or unwrap(). Consider using thiserror or anyhow.",
+      "applyTo": "**/*.rs",
+      "fileContains": "unwrap()",
+      "priority": "high"
+    },
+    {
+      "id": "rust-custom-error",
+      "name": "Create custom error type",
+      "description": "Define a custom error enum with thiserror for better error handling.",
+      "applyTo": "**/*.rs",
+      "fileContains": "Result<",
+      "priority": "medium"
+    },
+    {
+      "id": "rust-derive-traits",
+      "name": "Add derive macros",
+      "description": "Add commonly needed derives: Debug, Clone, PartialEq, Serialize, Deserialize.",
+      "applyTo": "**/*.rs",
+      "fileContains": "struct ",
+      "priority": "medium"
+    },
+    {
+      "id": "rust-clippy",
+      "name": "Run clippy",
+      "description": "Run 'cargo clippy' to catch common mistakes and improve code quality.",
+      "applyTo": "**/*.rs",
+      "priority": "medium"
+    },
+    {
+      "id": "rust-fmt",
+      "name": "Format code",
+      "description": "Run 'cargo fmt' to format code according to Rust style guidelines.",
+      "applyTo": "**/*.rs",
+      "priority": "low"
+    },
+    {
+      "id": "rust-unsafe-review",
+      "name": "Review unsafe code",
+      "description": "Carefully review and document all unsafe blocks. Consider if unsafe is necessary.",
+      "applyTo": "**/*.rs",
+      "fileContains": "unsafe",
+      "priority": "high"
+    },
+    {
+      "id": "rust-lifetime-docs",
+      "name": "Document lifetimes",
+      "description": "Add comments explaining lifetime relationships for complex signatures.",
+      "applyTo": "**/*.rs",
+      "fileContains": "<'",
+      "priority": "medium"
+    },
+    {
+      "id": "rust-async-tokio",
+      "name": "Add async runtime",
+      "description": "Ensure async code uses appropriate runtime (tokio, async-std).",
+      "applyTo": "**/*.rs",
+      "fileContains": "async fn",
+      "priority": "high"
+    },
+    {
+      "id": "rust-serde",
+      "name": "Add serialization",
+      "description": "Add Serialize/Deserialize derives for API types using serde.",
+      "applyTo": "**/*.rs",
+      "fileContains": "struct ",
+      "priority": "medium"
+    },
+    {
+      "id": "rust-integration-test",
+      "name": "Add integration tests",
+      "description": "Create tests in the tests/ directory for integration testing.",
+      "applyTo": "src/**/*.rs",
+      "fileContains": "pub fn",
+      "priority": "medium"
+    },
+    {
+      "id": "rust-benchmark",
+      "name": "Add benchmarks",
+      "description": "Add criterion benchmarks for performance-critical code.",
+      "applyTo": "**/*.rs",
+      "fileContains": "pub fn",
+      "priority": "low"
+    },
+    {
+      "id": "rust-feature-flags",
+      "name": "Check feature flags",
+      "description": "Ensure feature flags in Cargo.toml are properly configured.",
+      "applyTo": "Cargo.toml",
+      "fileContains": "[features]",
+      "priority": "medium"
+    },
+    {
+      "id": "rust-memory-safety",
+      "name": "Check for memory leaks",
+      "description": "Run with valgrind or AddressSanitizer to check for memory issues.",
+      "applyTo": "**/*.rs",
+      "fileContains": "Box::new",
+      "priority": "high"
+    },
+    {
+      "id": "rust-api-validation",
+      "name": "Validate API input",
+      "description": "Add input validation using validator crate for web endpoints.",
+      "applyTo": "**/*.rs",
+      "fileContains": "#[post",
+      "priority": "high"
+    },
+    {
+      "id": "rust-log-tracing",
+      "name": "Add logging/tracing",
+      "description": "Add tracing or log crate for observability and debugging.",
+      "applyTo": "**/*.rs",
+      "fileContains": "fn ",
+      "excludeFileContains": "tracing::",
+      "priority": "low"
+    },
+    {
+      "id": "rust-cargo-audit",
+      "name": "Run security audit",
+      "description": "Run 'cargo audit' to check for known vulnerabilities in dependencies.",
+      "applyTo": "Cargo.toml",
+      "priority": "high"
+    }
+  ]
+}

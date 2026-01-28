@@ -14,17 +14,18 @@ A beautiful VSCode extension that helps developers never forget common tasks whe
 ## Screenshots
 
 ![Developer Todos in Action](images/screenshot1.png)
-*Branch-aware todo list with priority grouping*
+_Branch-aware todo list with priority grouping_
 
 ![Expandable Todo Details](images/screenshot2.png)
-*Click to expand todos and see detailed descriptions*
+_Click to expand todos and see detailed descriptions_
 
 ![Filter and Complete Todos](images/screenshot3.png)
-*Filter between all/remaining todos and mark tasks complete*
+_Filter between all/remaining todos and mark tasks complete_
 
 ## Perfect for Salesforce Development
 
-This extension was designed with Salesforce developers in mind, but works for any development workflow. Never forget to:
+This extension was originally designed with Salesforce developers in mind, but works for any development workflow. Never forget to:
+
 - Add permissions for new Apex controllers
 - Create test classes for new classes
 - Add LWC components to pages
@@ -44,24 +45,45 @@ Install from the [VSCode Marketplace](https://marketplace.visualstudio.com/items
 
 ## Quick Start with Examples
 
-The fastest way to get started is using one of our ready-made templates:
+The fastest way to get started is using one of our ready-made templates. Download directly from GitHub:
 
-### For Salesforce Development:
+| Template                | Best For                               | Download                                                                                                                |
+| ----------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Salesforce**          | Apex, LWC, Flows, Triggers             | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/salesforce-todo.json)          |
+| **General Development** | JavaScript, TypeScript, React, Node.js | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/general-development-todo.json) |
+| **Simple Starter**      | Learning the extension                 | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/simple-starter-todo.json)      |
+| **Python/Django**       | Python, Django, Flask, FastAPI         | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/python-todo.json)              |
+| **Go**                  | Go/Golang projects                     | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/go-todo.json)                  |
+| **Rust**                | Rust projects                          | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/rust-todo.json)                |
+| **Java/Spring**         | Java, Spring Boot, Maven               | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/java-todo.json)                |
+| **C#/.NET**             | C#, .NET, ASP.NET Core                 | [Download](https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/csharp-todo.json)              |
+
+### Quick Install (using curl):
+
 ```bash
-cp node_modules/developer-todos/examples/salesforce-todo.json .todo.json
+# Salesforce
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/salesforce-todo.json
+
+# General Development (JS/TS/React)
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/general-development-todo.json
+
+# Python/Django
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/python-todo.json
+
+# Go
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/go-todo.json
+
+# Rust
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/rust-todo.json
+
+# Java/Spring
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/java-todo.json
+
+# C#/.NET
+curl -o .todo.json https://raw.githubusercontent.com/FredrikBurlin/developer-todos/main/examples/csharp-todo.json
 ```
 
-### For General Web Development:
-```bash
-cp node_modules/developer-todos/examples/general-development-todo.json .todo.json
-```
-
-### For a Simple Start:
-```bash
-cp node_modules/developer-todos/examples/simple-starter-todo.json .todo.json
-```
-
-**See all examples:** Check the [examples/](examples/) folder for more templates and customization guides.
+**See all examples:** Check the [examples folder on GitHub](https://github.com/FredrikBurlin/developer-todos/tree/main/examples) for more templates and customization guides.
 
 ---
 
@@ -129,6 +151,7 @@ Each template supports the following properties:
 ### Example Templates
 
 #### Salesforce: Apex Controller Permission
+
 ```json
 {
   "id": "apex-permission",
@@ -141,6 +164,7 @@ Each template supports the following properties:
 ```
 
 #### Salesforce: Test Class Required
+
 ```json
 {
   "id": "apex-test-class",
@@ -154,6 +178,7 @@ Each template supports the following properties:
 ```
 
 #### React: Component Testing
+
 ```json
 {
   "id": "react-test",
@@ -166,6 +191,7 @@ Each template supports the following properties:
 ```
 
 #### API: Add Documentation
+
 ```json
 {
   "id": "api-docs",
@@ -200,7 +226,9 @@ Developer Todos is designed around a branch-based workflow:
 The extension exposes an API for AI agents and other extensions:
 
 ```typescript
-const todoExtension = vscode.extensions.getExtension('yourpublisher.developer-todos');
+const todoExtension = vscode.extensions.getExtension(
+  "yourpublisher.developer-todos",
+);
 const api = await todoExtension.activate();
 
 // Get current branch
@@ -210,10 +238,10 @@ const branch = api.getCurrentBranch();
 const todos = api.getTodos();
 
 // Get todos for specific branch
-const featureTodos = api.getTodos('feature/auth');
+const featureTodos = api.getTodos("feature/auth");
 
 // Complete a todo
-await api.completeTodo('apex-permission:path/to/file.cls');
+await api.completeTodo("apex-permission:path/to/file.cls");
 
 // Refresh todos
 await api.refreshTodos();
@@ -242,17 +270,20 @@ If you're not using Git, the extension will still work! Todos will be organized 
 ## Development
 
 ### Build
+
 ```bash
 npm install
 npm run compile
 ```
 
 ### Watch Mode
+
 ```bash
 npm run watch
 ```
 
 ### Package
+
 ```bash
 npm run vscode:prepublish
 ```
