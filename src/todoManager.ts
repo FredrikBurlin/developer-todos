@@ -36,6 +36,8 @@ export class TodoManager {
   public async initialize(): Promise<void> {
     await this.loadTemplates();
     await this.loadState();
+    // Create any branch-level todos for the current branch
+    await this.createBranchLevelTodos();
   }
 
   /**
@@ -90,7 +92,9 @@ export class TodoManager {
           continue; // Template no longer exists
         }
 
-        const relativePath = path.relative(this.workspaceRoot, todoData.filePath);
+        // Handle branch-level todos (no file path)
+        const isBranchLevel = todoData.branchLevel || !todoData.filePath;
+        const relativePath = isBranchLevel ? undefined : path.relative(this.workspaceRoot, todoData.filePath!);
 
         branchTodos.set(todoId, {
           id: todoId,
@@ -105,6 +109,9 @@ export class TodoManager {
           ignored: todoData.ignored || false,
           ignoredAt: todoData.ignoredAt,
           branch,
+          branchLevel: isBranchLevel,
+          triggeringFiles: todoData.triggeringFiles,
+          aiInstruction: template.aiInstruction,
         });
       }
 
@@ -129,6 +136,8 @@ export class TodoManager {
           ignoredAt: todo.ignoredAt,
           filePath: todo.filePath,
           templateId: todo.templateId,
+          branchLevel: todo.branchLevel,
+          triggeringFiles: todo.triggeringFiles,
         };
       }
     }
@@ -170,7 +179,13 @@ export class TodoManager {
 
     // Quick path check before reading file
     if (!this.templateMatcher.pathMatchesAnyTemplate(relativePath, this.templates)) {
-      return;
+      // Also check branch-level templates with applyTo
+      const branchLevelWithApplyTo = this.templates.filter(
+        (t) => t.branchLevel && t.applyTo
+      );
+      if (!this.templateMatcher.pathMatchesAnyTemplate(relativePath, branchLevelWithApplyTo.map(t => ({ ...t, branchLevel: false })))) {
+        return;
+      }
     }
 
     // Read file content
@@ -182,55 +197,112 @@ export class TodoManager {
       return;
     }
 
-    // Find matching templates
-    const matchingTemplates = this.templateMatcher.getMatchingTemplates(
-      relativePath,
-      content,
-      this.templates
-    );
-
-    if (matchingTemplates.length === 0) {
-      return;
-    }
-
     // Get or create branch todos map
     if (!this.todos.has(currentBranch)) {
       this.todos.set(currentBranch, new Map());
     }
 
     const branchTodos = this.todos.get(currentBranch)!;
-    let todosAdded = false;
+    let todosChanged = false;
 
-    // Create todos for each matching template
-    for (const template of matchingTemplates) {
-      const todoId = `${template.id}:${relativePath}`;
-
-      // Skip if todo already exists
-      if (branchTodos.has(todoId)) {
+    // Check all templates
+    for (const template of this.templates) {
+      // Check if file matches this template's pattern
+      if (!template.applyTo) {
         continue;
       }
 
-      const todo: TodoInstance = {
-        id: todoId,
-        templateId: template.id,
-        name: template.name,
-        description: template.description,
-        filePath,
-        relativePath,
-        priority: template.priority || 'medium',
-        completed: false,
-        ignored: false,
-        branch: currentBranch,
-      };
+      const { minimatch } = await import('minimatch');
+      if (!minimatch(relativePath, template.applyTo, { dot: true, matchBase: false })) {
+        continue;
+      }
 
-      branchTodos.set(todoId, todo);
-      todosAdded = true;
+      // Check content conditions
+      if (template.fileContains && !content.includes(template.fileContains)) {
+        continue;
+      }
+      if (template.excludeFileContains && content.includes(template.excludeFileContains)) {
+        continue;
+      }
+
+      // Handle branch-level templates - add file to triggering files
+      if (template.branchLevel) {
+        const todoId = `branch:${template.id}`;
+        let todo = branchTodos.get(todoId);
+
+        if (!todo) {
+          // Create the branch-level todo if it doesn't exist
+          todo = {
+            id: todoId,
+            templateId: template.id,
+            name: template.name,
+            description: template.description,
+            priority: template.priority || 'medium',
+            completed: false,
+            ignored: false,
+            branch: currentBranch,
+            branchLevel: true,
+            triggeringFiles: [relativePath],
+            aiInstruction: template.aiInstruction,
+          };
+          branchTodos.set(todoId, todo);
+          todosChanged = true;
+        } else {
+          // Add file to triggering files if not already present
+          if (!todo.triggeringFiles) {
+            todo.triggeringFiles = [];
+          }
+          if (!todo.triggeringFiles.includes(relativePath)) {
+            todo.triggeringFiles.push(relativePath);
+            todosChanged = true;
+          }
+        }
+      } else {
+        // Handle regular file-based templates
+        const todoId = `${template.id}:${relativePath}`;
+
+        // Skip if todo already exists
+        if (branchTodos.has(todoId)) {
+          continue;
+        }
+
+        const todo: TodoInstance = {
+          id: todoId,
+          templateId: template.id,
+          name: template.name,
+          description: template.description,
+          filePath,
+          relativePath,
+          priority: template.priority || 'medium',
+          completed: false,
+          ignored: false,
+          branch: currentBranch,
+          aiInstruction: template.aiInstruction,
+        };
+
+        branchTodos.set(todoId, todo);
+        todosChanged = true;
+      }
     }
 
-    if (todosAdded) {
+    if (todosChanged) {
       await this.saveState();
       this.onTodosChangedEmitter.fire();
     }
+  }
+
+  /**
+   * Get a specific todo by ID
+   */
+  public getTodoById(todoId: string, branch?: string): TodoInstance | undefined {
+    const currentBranch = branch || this.gitService.getCurrentBranch();
+    const branchTodos = this.todos.get(currentBranch);
+
+    if (!branchTodos) {
+      return undefined;
+    }
+
+    return branchTodos.get(todoId);
   }
 
   /**
@@ -353,16 +425,140 @@ export class TodoManager {
   }
 
   /**
+   * Create branch-level todos (not tied to specific files)
+   * Branch-level todos with applyTo patterns will track matching files
+   */
+  public async createBranchLevelTodos(branch?: string): Promise<void> {
+    const currentBranch = branch || this.gitService.getCurrentBranch();
+
+    // Get or create branch todos map
+    if (!this.todos.has(currentBranch)) {
+      this.todos.set(currentBranch, new Map());
+    }
+
+    const branchTodos = this.todos.get(currentBranch)!;
+    let todosChanged = false;
+
+    // Find all branch-level templates (explicitly marked or no applyTo)
+    const branchLevelTemplates = this.templates.filter(
+      (t) => t.branchLevel === true || !t.applyTo
+    );
+
+    for (const template of branchLevelTemplates) {
+      const todoId = `branch:${template.id}`;
+      const existingTodo = branchTodos.get(todoId);
+
+      // If todo exists, we might still need to update triggering files
+      if (existingTodo) {
+        // For branch-level with applyTo, scan for new triggering files
+        if (template.applyTo) {
+          const newTriggeringFiles = await this.findTriggeringFiles(template);
+          if (newTriggeringFiles.length > 0) {
+            const existingFiles = existingTodo.triggeringFiles || [];
+            const allFiles = [...new Set([...existingFiles, ...newTriggeringFiles])];
+            if (allFiles.length !== existingFiles.length) {
+              existingTodo.triggeringFiles = allFiles;
+              todosChanged = true;
+            }
+          }
+        }
+        continue;
+      }
+
+      // Create new branch-level todo
+      const triggeringFiles = template.applyTo
+        ? await this.findTriggeringFiles(template)
+        : undefined;
+
+      // For templates with applyTo, only create todo if there are triggering files
+      if (template.applyTo && (!triggeringFiles || triggeringFiles.length === 0)) {
+        continue;
+      }
+
+      const todo: TodoInstance = {
+        id: todoId,
+        templateId: template.id,
+        name: template.name,
+        description: template.description,
+        priority: template.priority || 'medium',
+        completed: false,
+        ignored: false,
+        branch: currentBranch,
+        branchLevel: true,
+        triggeringFiles,
+        aiInstruction: template.aiInstruction,
+      };
+
+      branchTodos.set(todoId, todo);
+      todosChanged = true;
+    }
+
+    if (todosChanged) {
+      await this.saveState();
+      this.onTodosChangedEmitter.fire();
+    }
+  }
+
+  /**
+   * Find files that trigger a branch-level template
+   */
+  private async findTriggeringFiles(template: TodoTemplate): Promise<string[]> {
+    if (!template.applyTo) {
+      return [];
+    }
+
+    const changedFiles = this.gitService.getChangedFiles();
+    const triggeringFiles: string[] = [];
+
+    for (const filePath of changedFiles) {
+      if (this.isBinaryFile(filePath)) {
+        continue;
+      }
+
+      const relativePath = path.relative(this.workspaceRoot, filePath);
+
+      // Check if path matches
+      const { minimatch } = await import('minimatch');
+      if (!minimatch(relativePath, template.applyTo, { dot: true, matchBase: false })) {
+        continue;
+      }
+
+      // Check content if needed
+      if (template.fileContains || template.excludeFileContains) {
+        try {
+          const content = fs.readFileSync(filePath, 'utf-8');
+          if (template.fileContains && !content.includes(template.fileContains)) {
+            continue;
+          }
+          if (template.excludeFileContains && content.includes(template.excludeFileContains)) {
+            continue;
+          }
+        } catch {
+          continue;
+        }
+      }
+
+      triggeringFiles.push(relativePath);
+    }
+
+    return triggeringFiles;
+  }
+
+  /**
    * Refresh todos by scanning changed/staged files only
    */
   public async refreshTodos(branch?: string): Promise<void> {
     const currentBranch = branch || this.gitService.getCurrentBranch();
 
+    // First, ensure branch-level todos are created
+    await this.createBranchLevelTodos(currentBranch);
+
     // Get only changed/staged files from git
     const changedFiles = this.gitService.getChangedFiles();
 
     if (changedFiles.length === 0) {
-      vscode.window.showInformationMessage('No changed or staged files to scan');
+      // Still notify in case branch-level todos were added
+      this.onTodosChangedEmitter.fire();
       return;
     }
 

@@ -4,39 +4,66 @@ import { TodoManager } from './todoManager';
 import { GitService } from './gitService';
 
 /**
- * Tree item that can be either a priority group, todo item, or description
+ * Tree item that can be either a priority group, todo item, description, or triggering file
  */
 export class TodoTreeItem extends vscode.TreeItem {
+  public readonly filePath?: string; // For triggering file items
+
   constructor(
     public readonly label: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly itemType: 'group' | 'todoItem' | 'description',
-    public readonly todo?: TodoInstance
+    public readonly itemType: 'group' | 'todoItem' | 'description' | 'triggeringFile',
+    public readonly todo?: TodoInstance,
+    filePath?: string
   ) {
     super(label, collapsibleState);
+    this.filePath = filePath;
 
     if (itemType === 'todoItem' && todo) {
       // Set context values based on state
       if (todo.ignored) {
-        this.contextValue = 'todoItemIgnored';
-        this.iconPath = new vscode.ThemeIcon('debug-stackframe-dot', new vscode.ThemeColor('disabledForeground'));
-        // Apply strikethrough using resourceUri hack
-        this.resourceUri = vscode.Uri.parse('strikethrough://strikethrough');
+        this.contextValue = todo.branchLevel ? 'todoItemIgnoredBranchLevel' : 'todoItemIgnored';
+        this.iconPath = new vscode.ThemeIcon('circle-slash', new vscode.ThemeColor('disabledForeground'));
       } else if (todo.completed) {
-        this.contextValue = 'todoItemCompleted';
-        this.iconPath = new vscode.ThemeIcon('check', new vscode.ThemeColor('testing.iconPassed'));
+        this.contextValue = todo.branchLevel ? 'todoItemCompletedBranchLevel' : 'todoItemCompleted';
+        this.iconPath = new vscode.ThemeIcon('pass', new vscode.ThemeColor('testing.iconPassed'));
       } else {
-        this.contextValue = 'todoItem';
-        this.iconPath = new vscode.ThemeIcon('circle-outline');
+        this.contextValue = todo.branchLevel ? 'todoItemBranchLevel' : 'todoItem';
+        // Use circle-large-outline for undone tasks (neutral/white icon)
+        this.iconPath = new vscode.ThemeIcon('circle-large-outline');
       }
 
-      this.description = todo.relativePath;
-      this.tooltip = `${todo.description}\n\nFile: ${todo.relativePath}`;
+      // Branch-level todos with triggering files
+      if (todo.branchLevel) {
+        const fileCount = todo.triggeringFiles?.length || 0;
+        if (fileCount > 0) {
+          this.description = `(${fileCount} file${fileCount > 1 ? 's' : ''})`;
+          this.tooltip = `${todo.description}\n\nTriggered by ${fileCount} file${fileCount > 1 ? 's' : ''}`;
+        } else {
+          this.description = '(branch task)';
+          this.tooltip = `${todo.description}\n\nThis is a branch-level task (not tied to a specific file)`;
+        }
+      } else {
+        this.description = todo.relativePath;
+        this.tooltip = `${todo.description}\n\nFile: ${todo.relativePath}`;
+      }
 
       // No default command - clicking expands/collapses to show description
     } else if (itemType === 'description') {
       this.contextValue = 'description';
       this.iconPath = new vscode.ThemeIcon('info');
+    } else if (itemType === 'triggeringFile') {
+      this.contextValue = 'triggeringFile';
+      this.iconPath = new vscode.ThemeIcon('file');
+      this.tooltip = `Click to open: ${filePath}`;
+      // Make it clickable to open the file
+      if (filePath) {
+        this.command = {
+          command: 'developerTodos.openTriggeringFile',
+          title: 'Open File',
+          arguments: [filePath],
+        };
+      }
     } else if (itemType === 'group') {
       this.contextValue = 'group';
     }
@@ -114,15 +141,34 @@ export class TodoProvider implements vscode.TreeDataProvider<TodoTreeItem> {
     }
 
     if (element.itemType === 'todoItem' && element.todo) {
-      // Return description as child
-      return Promise.resolve([
+      const children: TodoTreeItem[] = [];
+
+      // Add description as first child
+      children.push(
         new TodoTreeItem(
           element.todo.description,
           vscode.TreeItemCollapsibleState.None,
           'description',
           element.todo
-        ),
-      ]);
+        )
+      );
+
+      // For branch-level todos with triggering files, show the files
+      if (element.todo.branchLevel && element.todo.triggeringFiles && element.todo.triggeringFiles.length > 0) {
+        for (const filePath of element.todo.triggeringFiles) {
+          children.push(
+            new TodoTreeItem(
+              filePath,
+              vscode.TreeItemCollapsibleState.None,
+              'triggeringFile',
+              element.todo,
+              filePath
+            )
+          );
+        }
+      }
+
+      return Promise.resolve(children);
     }
 
     return Promise.resolve([]);

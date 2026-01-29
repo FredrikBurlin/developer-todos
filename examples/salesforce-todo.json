@@ -6,7 +6,8 @@
       "description": "Add the Apex class to the appropriate permission set so users can execute it",
       "applyTo": "**/main/default/classes/**/*.cls",
       "fileContains": "@AuraEnabled",
-      "priority": "high"
+      "priority": "high",
+      "aiInstruction": "Create or edit a permission set XML file in permissionsets folder. Add <classAccesses><apexClass>ClassName</apexClass><enabled>true</enabled></classAccesses>. Then add the permission set to the relevant Permission Set Group."
     },
     {
       "id": "apex-test-class",
@@ -14,7 +15,8 @@
       "description": "Add test coverage for the new Apex class (minimum 75% required for deployment)",
       "applyTo": "**/main/default/classes/**/*.cls",
       "excludeFileContains": "@isTest",
-      "priority": "high"
+      "priority": "high",
+      "aiInstruction": "Create a test class named [ClassName]Test with @isTest annotation. Use @TestSetup for test data. Cover: 1) Positive scenarios, 2) Negative scenarios, 3) Bulk operations (200+ records), 4) Governor limit tests with Test.startTest()/Test.stopTest(). Aim for 90%+ coverage."
     },
     {
       "id": "apex-fls-check",
@@ -246,6 +248,63 @@
       "description": "Create or assign the appropriate page layout for this record type",
       "applyTo": "**/main/default/objects/**/recordTypes/*.recordType-meta.xml",
       "priority": "high"
+    },
+    {
+      "id": "branch-validate-deployment",
+      "name": "Validate deployment to production",
+      "description": "Run a check-only deployment to production to verify all components will deploy successfully",
+      "branchLevel": true,
+      "priority": "high"
+    },
+    {
+      "id": "branch-update-change-set",
+      "name": "Update change set (if not using CI/CD)",
+      "description": "Add all components to the outbound change set if deploying via change sets",
+      "branchLevel": true,
+      "priority": "high"
+    },
+    {
+      "id": "branch-data-migration",
+      "name": "Plan data migration",
+      "description": "If changes require data updates, prepare data migration scripts or data loader files",
+      "branchLevel": true,
+      "priority": "high"
+    },
+    {
+      "id": "branch-user-communication",
+      "name": "Communicate to users",
+      "description": "Notify affected users about upcoming changes, new features, or UI updates",
+      "branchLevel": true,
+      "priority": "medium"
+    },
+    {
+      "id": "branch-training-materials",
+      "name": "Update training materials",
+      "description": "Update user guides, training decks, or help documentation for new features",
+      "branchLevel": true,
+      "priority": "medium"
+    },
+    {
+      "id": "branch-post-deployment-verification",
+      "name": "Create post-deployment checklist",
+      "description": "Prepare a checklist of items to verify after deployment (flows activated, permissions assigned, etc.)",
+      "branchLevel": true,
+      "priority": "high"
+    },
+    {
+      "id": "branch-rollback-plan",
+      "name": "Document rollback plan",
+      "description": "Document steps to rollback the deployment if issues are discovered in production",
+      "branchLevel": true,
+      "priority": "high"
+    },
+    {
+      "id": "branch-uat-signoff",
+      "name": "Get UAT sign-off",
+      "description": "Have business stakeholders test and sign off on the changes in sandbox",
+      "branchLevel": true,
+      "priority": "high",
+      "aiInstruction": "Create a UAT checklist document with test scenarios. Share sandbox credentials with stakeholders. Schedule UAT session. Document any issues found. Get written sign-off (email or Jira ticket approval) before proceeding to production."
     }
   ]
 }

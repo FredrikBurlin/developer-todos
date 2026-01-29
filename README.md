@@ -22,6 +22,9 @@ _Click to expand todos and see detailed descriptions_
 ![Filter and Complete Todos](images/screenshot3.png)
 _Filter between all/remaining todos and mark tasks complete_
 
+![Copilot Integration](images/screenshot4.png)
+_Ask Copilot about your tasks and get AI-powered assistance to complete them_
+
 ## Perfect for Salesforce Development
 
 This extension was originally designed with Salesforce developers in mind, but works for any development workflow. Never forget to:
@@ -143,10 +146,12 @@ Each template supports the following properties:
 - **id** (required): Unique identifier for the template
 - **name** (required): Display name shown in the todo list
 - **description** (required): Detailed description of what needs to be done
-- **applyTo** (required): Glob pattern to match file paths (e.g., `**/*.cls`, `src/**/*.ts`)
+- **applyTo** (optional): Glob pattern to match file paths (e.g., `**/*.cls`, `src/**/*.ts`). Not needed for branch-level todos.
 - **fileContains** (optional): String that must be present in the file content
 - **excludeFileContains** (optional): String that must NOT be present in the file content
 - **priority** (optional): Priority level (`high`, `medium`, or `low`). Defaults to `medium`.
+- **branchLevel** (optional): Set to `true` for todos that apply once per branch (not tied to files).
+- **aiInstruction** (optional): Detailed instructions for AI assistants on how to complete the task.
 
 ### Example Templates
 
@@ -203,6 +208,30 @@ Each template supports the following properties:
 }
 ```
 
+#### Branch-Level: Deployment Tasks
+
+Branch-level todos appear once per branch and are not tied to specific files. Perfect for deployment tasks, release notes, or any task that needs to be done once before merging.
+
+```json
+{
+  "id": "deployment-checklist",
+  "name": "Review deployment checklist",
+  "description": "Verify all deployment requirements are met: tests pass, documentation updated, stakeholder approval",
+  "branchLevel": true,
+  "priority": "high"
+}
+```
+
+```json
+{
+  "id": "notify-team",
+  "name": "Notify team of changes",
+  "description": "Send a message to Slack/Teams about the upcoming changes and any impacts",
+  "branchLevel": true,
+  "priority": "medium"
+}
+```
+
 ## Commands
 
 - **Refresh Todos**: Manually scan workspace for todos
@@ -221,34 +250,43 @@ Developer Todos is designed around a branch-based workflow:
 4. Switch branches - each branch maintains its own todo list
 5. Your completed todos persist across VSCode restarts
 
-## AI Agent API
+## AI Integration
 
-The extension exposes an API for AI agents and other extensions:
+### Language Model Tools (GitHub Copilot, etc.)
 
-```typescript
-const todoExtension = vscode.extensions.getExtension(
-  "yourpublisher.developer-todos",
-);
-const api = await todoExtension.activate();
+The extension provides native AI integration through VS Code's Language Model Tools API. These tools are automatically available to AI assistants like GitHub Copilot:
 
-// Get current branch
-const branch = api.getCurrentBranch();
+| Tool | Reference | Description |
+|------|-----------|-------------|
+| **Get Remaining Tasks** | `#devTodos` | Lists all incomplete tasks for the current branch |
+| **Complete Task** | `#completeTodo` | Marks a specific task as completed |
+| **Get Task Instructions** | `#taskInstructions` | Gets detailed AI instructions for a task |
 
-// Get todos for current branch
-const todos = api.getTodos();
+#### Example Prompts with Copilot
 
-// Get todos for specific branch
-const featureTodos = api.getTodos("feature/auth");
+- "What tasks do I need to complete? #devTodos"
+- "Show me the high priority tasks #devTodos"
+- "How do I complete this test class task? #taskInstructions"
+- "Mark the apex-permission task as done #completeTodo"
 
-// Complete a todo
-await api.completeTodo("apex-permission:path/to/file.cls");
+### AI Instructions (`aiInstruction`)
 
-// Refresh todos
-await api.refreshTodos();
+Templates can include an `aiInstruction` field that provides detailed guidance for AI assistants:
 
-// Get all todos across all branches
-const allTodos = api.getAllBranchTodos();
+```json
+{
+  "id": "apex-test-class",
+  "name": "Create test class",
+  "description": "Add test coverage for the new Apex class",
+  "applyTo": "**/classes/**/*.cls",
+  "priority": "high",
+  "aiInstruction": "Create a test class with @isTest annotation. Include test methods for all public methods. Use Test.startTest()/Test.stopTest() for governor limits. Aim for 90%+ coverage."
+}
 ```
+
+When an AI assistant queries task instructions, it receives this detailed guidance along with the task details.
+
+See the [AI Agent Guide](AI_AGENT_GUIDE.md) for comprehensive documentation.
 
 ## Tips
 
@@ -264,7 +302,7 @@ If you're not using Git, the extension will still work! Todos will be organized 
 
 ## Requirements
 
-- VSCode 1.75.0 or higher
+- VSCode 1.93.0 or higher (for AI tools integration)
 - Node.js (for development)
 
 ## Development

@@ -6,7 +6,8 @@
       "description": "Create comprehensive unit tests for this module to ensure code quality and prevent regressions",
       "applyTo": "src/**/*.{js,ts,jsx,tsx}",
       "excludeFileContains": "test",
-      "priority": "high"
+      "priority": "high",
+      "aiInstruction": "Create a test file with the same name plus '.test' suffix (e.g., utils.test.ts). Use Jest or Vitest. Write tests for all exported functions covering: 1) happy path scenarios, 2) edge cases, 3) error conditions. Aim for >80% code coverage."
     },
     {
       "id": "add-documentation",
@@ -22,7 +23,8 @@
       "description": "Implement proper error handling with try-catch blocks and meaningful error messages",
       "applyTo": "src/**/*.{js,ts}",
       "fileContains": "async ",
-      "priority": "high"
+      "priority": "high",
+      "aiInstruction": "Wrap async operations in try-catch blocks. Create custom error classes for different error types. Log errors with context (function name, parameters). Return user-friendly error messages. Consider using a centralized error handler."
     },
     {
       "id": "typescript-types",
@@ -149,6 +151,43 @@
       "description": "Update GitHub Actions, Jenkins, or other CI/CD configuration for new build steps",
       "applyTo": ".github/workflows/**/*.yml",
       "priority": "medium"
+    },
+    {
+      "id": "branch-deployment-plan",
+      "name": "Create deployment plan",
+      "description": "Document deployment steps, rollback procedures, and any required infrastructure changes",
+      "branchLevel": true,
+      "priority": "high",
+      "aiInstruction": "Create a DEPLOYMENT.md file documenting: 1) Pre-deployment checklist, 2) Step-by-step deployment instructions, 3) Environment variables needed, 4) Database migrations, 5) Rollback procedure, 6) Smoke test steps, 7) Monitoring/alerts to watch."
+    },
+    {
+      "id": "branch-notify-team",
+      "name": "Notify team of changes",
+      "description": "Send a message to Slack/Teams about the upcoming changes and any impacts",
+      "branchLevel": true,
+      "priority": "medium"
+    },
+    {
+      "id": "branch-update-docs",
+      "name": "Update documentation",
+      "description": "Update user-facing documentation, API docs, or internal wikis with changes",
+      "branchLevel": true,
+      "priority": "medium"
+    },
+    {
+      "id": "branch-run-e2e",
+      "name": "Run E2E tests",
+      "description": "Execute end-to-end tests to verify the full user flow works correctly",
+      "branchLevel": true,
+      "priority": "high"
+    },
+    {
+      "id": "branch-security-review",
+      "name": "Security review",
+      "description": "Review changes for security vulnerabilities, run security scanners if available",
+      "branchLevel": true,
+      "priority": "high",
+      "aiInstruction": "Run 'npm audit' to check dependencies. Review code for: 1) SQL/NoSQL injection, 2) XSS vulnerabilities, 3) Hardcoded secrets, 4) Insecure direct object references, 5) Missing authentication/authorization checks. Use OWASP Top 10 as a checklist."
     }
   ]
 }

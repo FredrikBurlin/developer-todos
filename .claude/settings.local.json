@@ -4,7 +4,10 @@
       "Bash(npm run compile:*)",
       "Bash(npm install:*)",
       "Bash(grep:*)",
-      "Bash(npx @vscode/vsce package)"
+      "Bash(npx @vscode/vsce package)",
+      "Bash(code --uninstall-extension:*)",
+      "Bash(code --install-extension:*)",
+      "Bash(git show:*)"
     ]
   }
 }

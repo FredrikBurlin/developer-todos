@@ -5,6 +5,7 @@ import { TodoManager } from './todoManager';
 import { TodoProvider } from './todoProvider';
 import { FileWatcher } from './fileWatcher';
 import { TodoInstance } from './types';
+import { registerLanguageModelTools } from './lmTools';
 
 let gitService: GitService;
 let todoManager: TodoManager;
@@ -64,6 +65,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Setup file watcher
   fileWatcher = new FileWatcher(todoManager, gitService);
+
+  // Register language model tools for AI agents (Copilot, etc.)
+  registerLanguageModelTools(context, todoManager, gitService);
 
   // Setup branch change listener
   gitService.onBranchChange(async (newBranch) => {
@@ -140,6 +144,11 @@ export async function activate(context: vscode.ExtensionContext) {
     async (item: any) => {
       if (item && item.todo) {
         const todo: TodoInstance = item.todo;
+        // Branch-level todos don't have files
+        if (!todo.filePath) {
+          vscode.window.showInformationMessage('This is a branch-level task (no file associated)');
+          return;
+        }
         try {
           const fileUri = vscode.Uri.file(todo.filePath);
           const document = await vscode.workspace.openTextDocument(fileUri);
@@ -204,6 +213,12 @@ export async function activate(context: vscode.ExtensionContext) {
         return;
       }
 
+      // Branch-level todos don't have files
+      if (!todo.filePath) {
+        vscode.window.showInformationMessage('This is a branch-level task (no file associated)');
+        return;
+      }
+
       try {
         const fileUri = vscode.Uri.file(todo.filePath);
 
@@ -262,6 +277,32 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  // Command to open a triggering file from branch-level todo
+  const openTriggeringFileCommand = vscode.commands.registerCommand(
+    'developerTodos.openTriggeringFile',
+    async (relativePath: string) => {
+      if (!relativePath) {
+        return;
+      }
+
+      const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+      if (!workspaceFolder) {
+        vscode.window.showErrorMessage('No workspace folder open');
+        return;
+      }
+
+      try {
+        const fullPath = vscode.Uri.joinPath(workspaceFolder.uri, relativePath);
+        const document = await vscode.workspace.openTextDocument(fullPath);
+        await vscode.window.showTextDocument(document);
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          `Failed to open file: ${error instanceof Error ? error.message : 'Unknown error'}`
+        );
+      }
+    }
+  );
+
   // Add all to subscriptions
   context.subscriptions.push(
     treeView,
@@ -279,28 +320,13 @@ export async function activate(context: vscode.ExtensionContext) {
     openFileCommand,
     showTemplateCommand,
     clearBranchTodosCommand,
+    openTriggeringFileCommand,
     gitService,
     todoManager,
     fileWatcher
   );
 
   console.log('Developer Todos extension activated successfully');
-
-  // Return API for AI agents and other extensions
-  return {
-    getCurrentBranch: () => gitService.getCurrentBranch(),
-    getTodos: (branch?: string) => todoManager.getTodos(branch),
-    completeTodo: (id: string, branch?: string) =>
-      todoManager.completeTodo(id, branch),
-    reopenTodo: (id: string, branch?: string) =>
-      todoManager.reopenTodo(id, branch),
-    ignoreTodo: (id: string, branch?: string) =>
-      todoManager.ignoreTodo(id, branch),
-    unignoreTodo: (id: string, branch?: string) =>
-      todoManager.unignoreTodo(id, branch),
-    refreshTodos: (branch?: string) => todoManager.refreshTodos(branch),
-    getAllBranchTodos: () => todoManager.getAllBranchTodos(),
-  };
 }
 
 /**
@@ -325,6 +351,7 @@ async function createExampleConfig(workspaceRoot: string): Promise<void> {
         applyTo: 'force-app/main/default/classes/**/*.cls',
         fileContains: '@AuraEnabled',
         priority: 'high',
+        aiInstruction: 'Create or update a permission set to grant access to this Apex class. Add the class to the "Apex Class Access" section of the permission set.',
       },
       {
         id: 'lwc-add-to-page',
@@ -333,6 +360,7 @@ async function createExampleConfig(workspaceRoot: string): Promise<void> {
           'The LWC needs to be added to a flexipage or similar to show up for the user',
         applyTo: 'force-app/main/default/lwc/**',
         priority: 'medium',
+        aiInstruction: 'Add the Lightning Web Component to a Lightning App Page (flexipage), Record Page, or Home Page using the Lightning App Builder.',
       },
       {
         id: 'apex-test-class',
@@ -342,6 +370,7 @@ async function createExampleConfig(workspaceRoot: string): Promise<void> {
         fileContains: 'public class',
         excludeFileContains: '@isTest',
         priority: 'high',
+        aiInstruction: 'Create a test class with @isTest annotation. Include test methods for all public methods. Aim for at least 75% code coverage. Use Test.startTest() and Test.stopTest() for governor limit resets.',
       },
       {
         id: 'permission-set-to-group',
@@ -350,6 +379,7 @@ async function createExampleConfig(workspaceRoot: string): Promise<void> {
           'New permission set should be added to a permission set group or assigned to users',
         applyTo: 'force-app/main/default/permissionsets/**/*.permissionset-meta.xml',
         priority: 'medium',
+        aiInstruction: 'Add this permission set to an existing permission set group, or assign it directly to users who need access to the functionality it grants.',
       },
     ],
   };

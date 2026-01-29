@@ -5,10 +5,12 @@ export interface TodoTemplate {
   id: string;
   name: string;
   description: string;
-  applyTo: string; // Glob pattern
+  applyTo?: string; // Glob pattern (optional - if not set, creates a branch-level todo)
   fileContains?: string; // Content that must be present
   excludeFileContains?: string; // Content that must NOT be present
   priority?: 'high' | 'medium' | 'low';
+  branchLevel?: boolean; // If true, this todo appears once per branch (no file association)
+  aiInstruction?: string; // Instructions for AI agents on how to complete this task
 }
 
 /**
@@ -22,18 +24,21 @@ export interface TodoConfig {
  * Active todo instance for a specific file and branch
  */
 export interface TodoInstance {
-  id: string; // Format: templateId:relativePath
+  id: string; // Format: templateId:relativePath (or just templateId for branch-level todos)
   templateId: string;
   name: string;
   description: string;
-  filePath: string; // Absolute path
-  relativePath: string; // Workspace-relative path
+  filePath?: string; // Absolute path (undefined for branch-level todos)
+  relativePath?: string; // Workspace-relative path (undefined for branch-level todos)
   priority: 'high' | 'medium' | 'low';
   completed: boolean;
   completedAt?: string;
   ignored: boolean;
   ignoredAt?: string;
   branch: string;
+  branchLevel?: boolean; // True if this is a branch-level todo (not tied to a file)
+  triggeringFiles?: string[]; // Files that triggered this branch-level todo (relative paths)
+  aiInstruction?: string; // Instructions for AI agents on how to complete this task
 }
 
 /**
@@ -47,8 +52,10 @@ export interface TodoState {
         completedAt?: string;
         ignored: boolean;
         ignoredAt?: string;
-        filePath: string;
+        filePath?: string; // Optional for branch-level todos
         templateId: string;
+        branchLevel?: boolean; // True if this is a branch-level todo
+        triggeringFiles?: string[]; // Files that triggered this branch-level todo
       };
     };
   };

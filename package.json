@@ -2,7 +2,7 @@
   "name": "developer-todos",
   "displayName": "Developer Todos",
   "description": "Branch-aware todo management with smart template matching. Never forget common tasks when working on features.",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "publisher": "NordicCloudLabs",
   "author": {
     "name": "Fredrik Burlin"
@@ -10,7 +10,7 @@
   "license": "MIT",
   "icon": "icon.png",
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "^1.93.0"
   },
   "categories": [
     "Other"
@@ -148,30 +148,89 @@
         },
         {
           "command": "developerTodos.completeTodo",
-          "when": "view == developerTodosView && viewItem == todoItem",
+          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemBranchLevel)",
           "group": "inline@2"
         },
         {
           "command": "developerTodos.ignoreTodo",
-          "when": "view == developerTodosView && viewItem == todoItem",
+          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemBranchLevel)",
           "group": "inline@3"
         },
         {
           "command": "developerTodos.reopenTodo",
-          "when": "view == developerTodosView && viewItem == todoItemCompleted",
+          "when": "view == developerTodosView && (viewItem == todoItemCompleted || viewItem == todoItemCompletedBranchLevel)",
           "group": "inline@2"
         },
         {
           "command": "developerTodos.unignoreTodo",
-          "when": "view == developerTodosView && viewItem == todoItemIgnored",
+          "when": "view == developerTodosView && (viewItem == todoItemIgnored || viewItem == todoItemIgnoredBranchLevel)",
           "group": "inline@2"
         },
         {
           "command": "developerTodos.showTemplate",
-          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemCompleted || viewItem == todoItemIgnored)"
+          "when": "view == developerTodosView && (viewItem == todoItem || viewItem == todoItemCompleted || viewItem == todoItemIgnored || viewItem == todoItemBranchLevel || viewItem == todoItemCompletedBranchLevel || viewItem == todoItemIgnoredBranchLevel)"
         }
       ]
-    }
+    },
+    "languageModelTools": [
+      {
+        "name": "developerTodos_getRemainingTasks",
+        "displayName": "Get Remaining Tasks",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "devTodos",
+        "icon": "$(checklist)",
+        "userDescription": "Get the list of remaining developer tasks for the current git branch",
+        "modelDescription": "Gets all remaining (incomplete and not ignored) developer todos/tasks for the current git branch. Returns a list of tasks with their ID, name, description, priority, associated file path, and AI instructions if available. Use this to understand what tasks need to be completed before a feature is ready.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "priority": {
+              "type": "string",
+              "enum": ["high", "medium", "low", "all"],
+              "description": "Filter tasks by priority level. Use 'all' to get all priorities."
+            }
+          }
+        }
+      },
+      {
+        "name": "developerTodos_completeTodo",
+        "displayName": "Complete Task",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "completeTodo",
+        "icon": "$(check)",
+        "userDescription": "Mark a developer task as completed",
+        "modelDescription": "Marks a specific developer todo/task as completed. Use this after you have finished implementing or addressing the task. The task will be marked as done and moved to the completed section. Requires the exact task ID which can be obtained from getRemainingTasks.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "todoId": {
+              "type": "string",
+              "description": "The unique ID of the todo to complete. Get this from the getRemainingTasks tool."
+            }
+          },
+          "required": ["todoId"]
+        }
+      },
+      {
+        "name": "developerTodos_getTaskInstructions",
+        "displayName": "Get Task Instructions",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "taskInstructions",
+        "icon": "$(info)",
+        "userDescription": "Get detailed AI instructions for completing a specific task",
+        "modelDescription": "Gets the detailed AI instructions for a specific developer todo/task. Templates can include aiInstruction fields that provide step-by-step guidance on how to complete the task. Use this to understand exactly what needs to be done to complete a task. Returns the task details along with any AI-specific instructions defined in the template.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "todoId": {
+              "type": "string",
+              "description": "The unique ID of the todo to get instructions for. Get this from the getRemainingTasks tool."
+            }
+          },
+          "required": ["todoId"]
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

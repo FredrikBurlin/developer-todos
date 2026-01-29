@@ -13,6 +13,11 @@ export class TemplateMatcher {
     fileContent: string,
     template: TodoTemplate
   ): boolean {
+    // Branch-level templates don't match files
+    if (template.branchLevel || !template.applyTo) {
+      return false;
+    }
+
     // Check if file path matches the glob pattern
     const pathMatches = minimatch(relativePath, template.applyTo, {
       dot: true,
@@ -61,8 +66,10 @@ export class TemplateMatcher {
     relativePath: string,
     templates: TodoTemplate[]
   ): boolean {
-    return templates.some((template) =>
-      minimatch(relativePath, template.applyTo, {
+    // Only check file-based templates (not branch-level)
+    const fileTemplates = templates.filter((t) => t.applyTo && !t.branchLevel);
+    return fileTemplates.some((template) =>
+      minimatch(relativePath, template.applyTo!, {
         dot: true,
         matchBase: false,
       })
